@@ -14,8 +14,8 @@ export const SITE = {
 };
 
 export const ASSETS = {
-  heroVideo: "/videos/atlas-hero.mp4",
-  introVideo: "/videos/atlas-intro.mp4",
+  heroVideo: `${import.meta.env.BASE_URL}videos/atlas-hero.mp4`,
+  introVideo: `${import.meta.env.BASE_URL}videos/atlas-intro.mp4`,
   logo: atlasLogo,
   honeyLiquid,
   hiveProducts,

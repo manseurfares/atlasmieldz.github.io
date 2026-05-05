@@ -91,8 +91,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return error?.message ?? null;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return error.message;
+
+    const nextRole = data.user ? await fetchRole(data.user.id) : null;
+    if (!nextRole) {
+      await supabase.auth.signOut();
+      setSession(null);
+      setUser(null);
+      setRole(null);
+      return "هذا الحساب غير مضاف إلى لوحة الإدارة بعد. شغّل أمر الترقية في SQL ثم جرّب مرة أخرى.";
+    }
+
+    setSession(data.session ?? null);
+    setUser(data.user ?? null);
+    setRole(nextRole);
+    return null;
   };
 
   const signOut = async () => {
