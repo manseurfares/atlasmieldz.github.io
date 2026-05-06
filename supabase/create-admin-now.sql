@@ -1,5 +1,7 @@
 create extension if not exists pgcrypto;
 
+grant usage on schema public to anon, authenticated, service_role;
+
 do $$
 declare
   new_user_id uuid := gen_random_uuid();

@@ -48,6 +48,10 @@ create table if not exists public.site_settings (
   updated_at timestamptz not null default timezone('utc', now())
 );
 
+grant usage on schema public to anon, authenticated, service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -164,6 +168,10 @@ begin
   where id = target_user.id;
 end;
 $$;
+
+grant execute on function public.is_admin_user(uuid) to anon, authenticated, service_role;
+grant execute on function public.is_backoffice_user(uuid) to anon, authenticated, service_role;
+grant execute on function public.promote_existing_user_to_admin(text) to authenticated, service_role;
 
 drop trigger if exists on_auth_user_created_bootstrap_admin on auth.users;
 create trigger on_auth_user_created_bootstrap_admin

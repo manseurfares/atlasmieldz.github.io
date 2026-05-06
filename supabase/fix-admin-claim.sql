@@ -30,4 +30,5 @@ begin
 end;
 $$;
 
+grant usage on schema public to anon, authenticated, service_role;
 grant execute on function public.claim_admin_access() to authenticated;
