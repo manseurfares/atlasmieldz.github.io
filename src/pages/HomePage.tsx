@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import {
-  ArrowLeft,
-  BadgeCheck,
-  Sparkles,
-  Truck,
-} from "lucide-react";
+import { motion, type MotionValue, useScroll, useTransform } from "motion/react";
+import { ArrowLeft, BadgeCheck, Sparkles, Truck } from "lucide-react";
 import { useCatalog } from "@/components/CatalogProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
@@ -45,34 +40,35 @@ function ScrollStoryScene({
 
   const opacity = useTransform(
     progress,
-    [Math.max(0, start - 0.06), start + 0.04, center, end - 0.04, end + 0.04],
+    [Math.max(0, start - 0.04), start + 0.05, center, end - 0.05, Math.min(1, end + 0.05)],
     [0, 1, 1, 1, 0],
   );
-  const titleY = useTransform(progress, [start, center, end], [90, 0, -120]);
-  const leftX = useTransform(progress, [start, center, end], [-220, 0, -90]);
-  const rightX = useTransform(progress, [start, center, end], [220, 0, 90]);
-  const leftRotate = useTransform(progress, [start, center, end], [-18, -9, -13]);
-  const rightRotate = useTransform(progress, [start, center, end], [18, 9, 13]);
-  const cardScale = useTransform(progress, [start, center, end], [0.92, 1, 0.96]);
+  const titleY = useTransform(progress, [start, center, end], [100, 0, -120]);
+  const leftX = useTransform(progress, [start, center, end], [-240, 0, -70]);
+  const rightX = useTransform(progress, [start, center, end], [240, 0, 70]);
+  const leftRotate = useTransform(progress, [start, center, end], [-16, -8, -12]);
+  const rightRotate = useTransform(progress, [start, center, end], [16, 8, 12]);
+  const cardScale = useTransform(progress, [start, center, end], [0.9, 1, 0.95]);
 
   return (
     <motion.div style={{ opacity }} className="absolute inset-0 flex items-center justify-center">
-      <div className="grid w-full items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
+      <div className="grid w-full items-center gap-8 md:grid-cols-[1fr_auto_1fr]">
         <motion.div
           style={{ x: leftX, rotate: leftRotate, scale: cardScale }}
-          className="relative mx-auto w-full max-w-[270px] md:max-w-[360px]"
+          className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
         >
-          <div className="absolute -top-6 left-5 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/65" />
-          <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
-            <img src={item.left} alt={item.title} className="h-[330px] w-full rounded-[22px] object-cover md:h-[470px]" />
+          <div className="absolute -left-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
+          <div className="relative overflow-hidden rounded-[28px] border border-[#dbc9a8] bg-white p-3 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)]">
+            <img
+              src={item.left}
+              alt={item.title}
+              className="h-[320px] w-full rounded-[22px] object-cover md:h-[470px]"
+            />
           </div>
         </motion.div>
 
-        <motion.div
-          style={{ y: titleY, opacity, scale: cardScale }}
-          className="mx-auto max-w-sm text-center"
-        >
-          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_18px_40px_-20px_rgba(0,0,0,0.5)]">
+        <motion.div style={{ y: titleY, opacity }} className="mx-auto max-w-sm text-center">
+          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_20px_38px_-20px_rgba(0,0,0,0.45)]">
             {item.step}
           </div>
           <h3 className="mt-5 text-3xl font-extrabold text-[#24160b] md:text-5xl">{item.title}</h3>
@@ -83,11 +79,15 @@ function ScrollStoryScene({
 
         <motion.div
           style={{ x: rightX, rotate: rightRotate, scale: cardScale }}
-          className="relative mx-auto w-full max-w-[270px] md:max-w-[360px]"
+          className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
         >
-          <div className="absolute -top-6 right-5 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/65" />
-          <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
-            <img src={item.right} alt={item.title} className="h-[330px] w-full rounded-[22px] object-cover md:h-[470px]" />
+          <div className="absolute -right-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
+          <div className="relative overflow-hidden rounded-[28px] border border-[#dbc9a8] bg-white p-3 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)]">
+            <img
+              src={item.right}
+              alt={item.title}
+              className="h-[320px] w-full rounded-[22px] object-cover md:h-[470px]"
+            />
           </div>
         </motion.div>
       </div>
@@ -104,8 +104,8 @@ export function HomePage() {
   const { scrollYProgress: storyProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.18]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const storyIntroOpacity = useTransform(storyProgress, [0, 0.07], [1, 0]);
-  const storyIntroY = useTransform(storyProgress, [0, 0.07], [0, -40]);
+  const storyIntroOpacity = useTransform(storyProgress, [0, 0.08], [1, 0]);
+  const storyIntroY = useTransform(storyProgress, [0, 0.08], [0, -46]);
 
   useEffect(() => {
     void trackPixel("PageView", undefined, {
@@ -129,6 +129,7 @@ export function HomePage() {
     const images = products
       .filter((product) => product.active)
       .flatMap((product) => product.images)
+      .filter(Boolean)
       .slice(0, 6);
 
     const fallback = [
@@ -140,27 +141,27 @@ export function HomePage() {
       ASSETS.arabicHoneyShowcase,
     ];
 
-    const pool = images.length === 6 ? images : fallback;
+    const pool = images.length >= 6 ? images : fallback;
 
     return [
       {
         step: "1",
         title: "حصاد يدوي",
-        text: "يتم جمع العسل بعناية كبيرة للحفاظ على قوامه ونقائه منذ أول مرحلة.",
+        text: "ننتقي العسل بعناية منذ أول مرحلة جمع، حتى نحافظ على النقاء والطابع الطبيعي في كل دفعة.",
         left: pool[0],
         right: pool[1],
       },
       {
         step: "2",
         title: "بدون إضافات",
-        text: "نقدمه بطبيعته الكاملة بلا خلط أو إضافات، حتى يصل بطعمه الحقيقي كما هو.",
+        text: "يصل إليكم بطبيعته الكاملة، بلا خلط أو مواد إضافية، ليبقى الطعم الأصيل حاضرًا كما هو.",
         left: pool[2],
         right: pool[3],
       },
       {
         step: "3",
         title: "جودة مختبرة",
-        text: "كل دفعة تُراجع بعناية حتى نقدم لكم تجربة ثابتة تليق بثقتكم في العلامة.",
+        text: "كل منتج نعرضه يمر بمراجعة دقيقة حتى تبقى التجربة ثابتة، راقية، ومطمئنة في كل طلب.",
         left: pool[4],
         right: pool[5],
       },
@@ -185,7 +186,7 @@ export function HomePage() {
         >
           <source src={ASSETS.heroVideo} type="video/mp4" />
         </motion.video>
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.56),rgba(0,0,0,0.26),rgba(0,0,0,0.78))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.58),rgba(0,0,0,0.28),rgba(0,0,0,0.8))]" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24">
           <div className="mx-auto max-w-4xl text-center">
@@ -302,27 +303,22 @@ export function HomePage() {
         <section ref={storyRef} className="relative h-[300vh] overflow-hidden bg-[#f6f0e6]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-          <div className="sticky top-0 flex min-h-screen items-center">
+          <div className="sticky top-0 flex min-h-screen items-center overflow-hidden">
             <div className="mx-auto w-full max-w-7xl px-6">
               <motion.div
                 style={{ opacity: storyIntroOpacity, y: storyIntroY }}
-                className="absolute inset-x-0 top-28 z-20 text-center"
+                className="absolute inset-x-0 top-20 z-20 text-center"
               >
                 <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا نختار عسلنا؟</p>
-                <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">3 مراحل داخل نفس البلوك</h2>
+                <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">ثلاث مراحل داخل نفس المشهد</h2>
                 <p className="mx-auto mt-4 max-w-2xl text-sm font-bold leading-8 text-[#6a533a] md:text-base">
-                  مع كل سكرول، الصور الجديدة تدخل من اليمين واليسار، والعنوان الحالي يصعد للأعلى لتأخذ المرحلة التالية مكانه.
+                  مع كل سكرول، تظهر صورتان جديدتان من اليمين واليسار، بينما يرتفع عنوان المرحلة الحالية للأعلى ليأخذ التالي مكانه في نفس البلوك.
                 </p>
               </motion.div>
 
               <div className="relative min-h-screen">
                 {showcasePairs.map((item, index) => (
-                  <ScrollStoryScene
-                    key={item.step}
-                    progress={storyProgress}
-                    item={item}
-                    index={index}
-                  />
+                  <ScrollStoryScene key={item.step} progress={storyProgress} item={item} index={index} />
                 ))}
               </div>
             </div>
@@ -384,10 +380,7 @@ export function HomePage() {
 
         <section className="bg-[#24160b] py-20 text-white">
           <div className="mx-auto max-w-7xl px-6">
-            <motion.div
-              {...revealUp}
-              className="mb-12 text-center"
-            >
+            <motion.div {...revealUp} className="mb-12 text-center">
               <p className="text-sm font-extrabold tracking-[0.28em] text-[#ffbf43]">رحلة الطلب</p>
               <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">واجهة أكثر ذكاءً في عرض المزايا الأساسية</h2>
             </motion.div>
@@ -402,7 +395,7 @@ export function HomePage() {
                 {
                   icon: BadgeCheck,
                   title: "ثقة فورية",
-                  text: "هيكلة الصفحة صارت تشرح الجودة والتوصيل والموثوقية بدون تشويش أو تكرار ممل.",
+                  text: "هيكلة الصفحة تشرح الجودة والتوصيل والموثوقية بدون تشويش أو تكرار ممل.",
                 },
                 {
                   icon: Truck,
@@ -457,10 +450,7 @@ export function HomePage() {
         </motion.section>
 
         <section className="mx-auto max-w-7xl px-6 py-20">
-          <motion.div
-            {...revealUp}
-            className="mb-12 text-center"
-          >
+          <motion.div {...revealUp} className="mb-12 text-center">
             <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">آراء عملائنا</p>
             <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">انطباعات حقيقية داخل عرض أكثر أناقة</h2>
           </motion.div>

@@ -28,19 +28,8 @@ export function Intro({ onDone }: { onDone: () => void }) {
   return (
     <AnimatePresence>
       {!closing ? (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] bg-black"
-        >
-          <video
-            ref={ref}
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            className="h-full w-full object-cover"
-          >
+        <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black">
+          <video ref={ref} autoPlay muted playsInline preload="auto" className="h-full w-full object-cover">
             <source src={ASSETS.introVideo} type="video/mp4" />
           </video>
 
@@ -53,14 +42,14 @@ export function Intro({ onDone }: { onDone: () => void }) {
               transition={{ duration: 0.9, delay: 0.25 }}
               className="max-w-3xl text-white"
             >
-              <p className="mb-3 text-sm font-semibold tracking-[0.45em] text-[#f0c067] uppercase">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.45em] text-[#f0c067]">
                 Atlas Miel
               </p>
               <h1 className="text-5xl font-black leading-tight md:text-7xl">
                 عسل طبيعي أصيل
               </h1>
               <p className="mt-4 text-base leading-8 text-white/85 md:text-xl">
-                من قلب الطبيعة الجزائرية إلى مائدتك بجودة راقية ومذاق لا ينسى
+                من قلب الطبيعة الجزائرية إلى مائدتك بجودة راقية ومذاق لا يُنسى
               </p>
             </motion.div>
           </div>

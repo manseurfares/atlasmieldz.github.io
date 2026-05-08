@@ -11,7 +11,7 @@ export function ProductsPage() {
   return (
     <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-6 pt-32 pb-20">
+      <main className="mx-auto max-w-7xl px-6 pb-20 pt-32">
         <div className="mb-10 text-center">
           <p className="text-sm font-extrabold text-[#d18b11]">منتجات أطلس ميل</p>
           <h1 className="mt-3 text-4xl font-extrabold md:text-6xl">اختر المنتج المناسب لك</h1>
@@ -36,7 +36,11 @@ export function ProductsPage() {
               >
                 <Link to={`/produits/${product.id}`}>
                   <div className="aspect-[4/5] overflow-hidden">
-                    <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition duration-700 hover:scale-105" />
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="h-full w-full object-cover transition duration-700 hover:scale-105"
+                    />
                   </div>
                   <div className="p-6">
                     <h3 className="text-2xl font-extrabold">{product.name}</h3>
