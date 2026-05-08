@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function LoginPage() {
-  const { role, loading, signIn, sendReset } = useAuth();
+  const { role, loading, signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -42,23 +42,6 @@ export function LoginPage() {
               {submitting ? "جارٍ الدخول..." : "دخول"}
             </Button>
           </form>
-
-          <button
-            type="button"
-            className="mt-4 w-full text-sm font-bold text-[#d18b11]"
-            onClick={() => {
-              if (!email.trim()) {
-                toast.error("اكتب البريد الإلكتروني أولاً.");
-                return;
-              }
-              void sendReset(email.trim()).then((error) => {
-                if (error) toast.error(error);
-                else toast.success("تم إرسال رابط إعادة التعيين.");
-              });
-            }}
-          >
-            نسيت كلمة المرور؟
-          </button>
 
           <p className="mt-4 text-center text-xs text-[#7a644d]">
             <Link to="/" className="underline">العودة إلى الموقع</Link>

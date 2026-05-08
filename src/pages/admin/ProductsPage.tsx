@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, Pencil, Plus, Trash2, UploadCloud } from "lucide-react";
+import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { deleteProduct, fetchAdminProducts, seedDefaultProducts } from "@/lib/supabase";
+import { deleteProduct, fetchAdminProducts } from "@/lib/supabase";
 import { formatDzd } from "@/lib/utils";
 import type { ProductRecord } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -35,18 +35,6 @@ export function AdminProductsPage() {
           <p className="mt-2 text-sm text-[#7a644d]">{products.length} منتج</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              void seedDefaultProducts().then(() => {
-                toast.success("تم استيراد المنتجات الافتراضية.");
-                return load();
-              }).catch((error: Error) => toast.error(error.message));
-            }}
-          >
-            <UploadCloud size={16} />
-            استيراد المنتجات
-          </Button>
           <Link to="/admin/products/new">
             <Button>
               <Plus size={16} />
