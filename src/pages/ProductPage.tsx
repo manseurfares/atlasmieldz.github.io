@@ -170,9 +170,9 @@ export function ProductPage() {
 
             <div className="mt-8 grid gap-3">
               {[
-                "تنويه: هذا العسل خاضع للتحاليل المخبرية ومُدرج ضمن معايير الجودة الخاصة بالتغذية.",
-                "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
-                "الدفع عند الاستلام مع خدمة توصيل مرنة.",
+                "منتج طبيعي مختار بعناية",
+                "تغليف محترف وآمن",
+                "الدفع عند الاستلام",
               ].map((item) => (
                 <div key={item} className="relative rounded-2xl bg-white px-4 py-3 pr-12 shadow-sm">
                   <CheckCircle2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#d18b11]" />
@@ -287,14 +287,14 @@ export function ProductPage() {
 
             <Input value={address} onChange={(event) => setAddress(event.target.value)} placeholder="العنوان الدقيق" />
 
-            <div className="flex items-center justify-between rounded-2xl border border-[#f0a429] bg-[#fff7e5] px-4 py-4">
-              <span className="font-extrabold">الكمية</span>
+            <div className="flex items-center justify-between rounded-[18px] border border-[#f0d28d] bg-[#fff7e5] px-4 py-2.5">
+              <span className="text-sm font-extrabold text-[#7a5a27]">الكمية</span>
               <Input
                 type="number"
                 min={1}
                 value={quantity}
                 onChange={(event) => setQuantity(Math.max(1, Number(event.target.value || 1)))}
-                className="w-24 text-center"
+                className="h-10 w-20 rounded-xl px-3 text-center text-sm font-extrabold"
               />
             </div>
 
