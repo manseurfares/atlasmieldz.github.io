@@ -130,22 +130,22 @@ export function HomePage() {
     return [
       {
         step: "1",
-        title: "حصاد يدوي",
-        text: "ننتقي العسل بعناية منذ أول مرحلة جمع، حتى نحافظ على النقاء والطابع الطبيعي في كل دفعة.",
+        title: "اختيار دقيق",
+        text: "نبدأ بانتقاء الأنواع التي تستحق أن تحمل اسم أطلس ميل، حتى لا يصل إليكم إلا العسل الذي يحقق معاييرنا في الطعم والجودة.",
         left: pool[0],
         right: pool[1],
       },
       {
         step: "2",
-        title: "بدون إضافات",
-        text: "يصل إليكم بطبيعته الكاملة، بلا خلط أو مواد إضافية، ليبقى الطعم الأصيل حاضرًا كما هو.",
+        title: "نقاء طبيعي",
+        text: "نحافظ على طبيعة المنتج كما هي، بلا إضافات أو خلط، ليبقى المذاق الأصيل والفوائد الطبيعية حاضرين في كل ملعقة.",
         left: pool[2],
         right: pool[3],
       },
       {
         step: "3",
-        title: "جودة مختبرة",
-        text: "كل منتج نعرضه يمر بمراجعة دقيقة حتى تبقى التجربة ثابتة، راقية، ومطمئنة في كل طلب.",
+        title: "ثقة عند الاستلام",
+        text: "نهتم بالتفاصيل من العرض إلى التعبئة، حتى تصلكم الطلبات بصورة تليق بثقتكم وتمنحكم تجربة شراء مطمئنة وواضحة.",
         left: pool[4],
         right: pool[5],
       },
@@ -189,9 +189,9 @@ export function HomePage() {
               transition={{ duration: 0.85, delay: 0.1 }}
               className="mt-6 text-5xl font-extrabold leading-[1.05] text-white md:text-7xl lg:text-[5.5rem]"
             >
-              تجربة عسل
+              مذاق أصيل
               <br />
-              <span className="text-[#ffbf43]">أكثر فخامة وحداثة</span>
+              <span className="text-[#ffbf43]">من قلب الطبيعة الجزائرية</span>
             </motion.h1>
 
             <motion.p
@@ -200,7 +200,7 @@ export function HomePage() {
               transition={{ duration: 0.75, delay: 0.2 }}
               className="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg"
             >
-              عسل طبيعي موثوق، عرض بصري أنيق، طلب سريع، وتجربة عربية راقية صُممت لتترك الانطباع من أول ثانية.
+              نقدّم لكم عسلاً طبيعياً ومنتجات خلية مختارة بعناية، بطعم نقي وجودة ثابتة وتجربة طلب سهلة وواضحة من أول زيارة.
             </motion.p>
 
             <motion.div
@@ -235,14 +235,14 @@ export function HomePage() {
               className="relative overflow-hidden rounded-[36px] bg-[#24160b] p-8 text-white shadow-[0_30px_90px_-55px_rgba(36,22,11,0.8)] md:p-10"
             >
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#f0a429] via-[#ffcf71] to-[#f0a429]" />
-              <p className="text-sm font-extrabold tracking-[0.28em] text-[#f0c067]">رؤية جديدة</p>
+              <p className="text-sm font-extrabold tracking-[0.28em] text-[#f0c067]">أصالة موثوقة</p>
               <h2 className="mt-4 text-4xl font-extrabold leading-tight md:text-5xl">
-                واجهة حديثة تضع
-                <span className="text-[#ffbf43]"> المنتج </span>
-                في مركز التجربة
+                نختار لكم
+                <span className="text-[#ffbf43]"> العسل الطبيعي </span>
+                بعناية تليق بثقتكم
               </h2>
               <p className="mt-6 max-w-2xl text-sm leading-8 text-white/75 md:text-base">
-                لم نعد نعرض العسل كمنتج فقط، بل كتجربة بصرية راقية: صور أقوى، إيقاع أوضح، وثقة محسوسة في كل قسم من الصفحة.
+                أطلس ميل علامة متخصصة في تقديم العسل الطبيعي الأصيل ومنتجات الخلية المختارة من مصادر موثوقة، لنمنحكم طعماً نقياً وجودة ثابتة وتجربة شراء مريحة وواضحة.
               </p>
 
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -289,10 +289,10 @@ export function HomePage() {
             {...revealUp}
             className="mx-auto mb-8 max-w-4xl px-6 text-center"
           >
-            <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا نختار عسلنا؟</p>
-            <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">ثلاث مراحل داخل نفس المشهد</h2>
+            <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا أطلس ميل؟</p>
+            <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">ثلاث مراحل تصنع الفرق</h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm font-bold leading-8 text-[#6a533a] md:text-base">
-              مع كل سكرول، تظهر صورتان جديدتان من اليمين واليسار، بينما يرتفع عنوان المرحلة الحالية للأعلى ليأخذ التالي مكانه في نفس البلوك.
+              من الانتقاء الأولي إلى التعبئة النهائية، نحافظ على نفس الوعد: عسل طبيعي، نقي، مختار بعناية ليصل إليكم بأفضل صورة.
             </p>
           </motion.div>
 
@@ -309,11 +309,11 @@ export function HomePage() {
             className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
           >
             <div>
-              <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">منتجات مختارة</p>
-              <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">تشكيلة مصممة لتُبهر من أول نظرة</h2>
+              <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">أنواع العسل المميزة</p>
+              <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">تشكيلة مختارة لعشاق الجودة والطعم الأصيل</h2>
             </div>
             <Link to="/produits" className="text-sm font-extrabold text-[#d18b11]">
-              مشاهدة الكل
+              اكتشف المتجر
             </Link>
           </motion.div>
 
@@ -359,26 +359,26 @@ export function HomePage() {
         <section className="bg-[#24160b] py-20 text-white">
           <div className="mx-auto max-w-7xl px-6">
             <motion.div {...revealUp} className="mb-12 text-center">
-              <p className="text-sm font-extrabold tracking-[0.28em] text-[#ffbf43]">رحلة الطلب</p>
-              <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">واجهة أكثر ذكاءً في عرض المزايا الأساسية</h2>
+              <p className="text-sm font-extrabold tracking-[0.28em] text-[#ffbf43]">قيمتنا</p>
+              <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">ما الذي يجعل تجربتكم معنا أكثر ثقة وراحة</h2>
             </motion.div>
 
             <div className="grid gap-6 lg:grid-cols-3">
               {[
                 {
                   icon: Sparkles,
-                  title: "اختيار مدروس",
-                  text: "كل منتج معروض بصورة أوضح وتفاصيل أقرب، لتعرف بسرعة ما الذي يناسبك.",
+                  title: "اختيار موثوق",
+                  text: "ننتقي منتجاتنا من مصادر معروفة ونراجع جودتها بعناية قبل عرضها لكم.",
                 },
                 {
                   icon: BadgeCheck,
-                  title: "ثقة فورية",
-                  text: "هيكلة الصفحة تشرح الجودة والتوصيل والموثوقية بدون تشويش أو تكرار ممل.",
+                  title: "جودة واضحة",
+                  text: "نعرض كل منتج بصور وتفاصيل دقيقة حتى تكون قرارات الشراء مبنية على وضوح وثقة.",
                 },
                 {
                   icon: Truck,
-                  title: "طلب أسرع",
-                  text: "من التصفح إلى الطلب، المسار صار أبسط وأسرع ويخدم تحويل الزائر إلى عميل فعلي.",
+                  title: "توصيل مريح",
+                  text: "من التصفح إلى تأكيد الطلب، التجربة مبسطة لتصل منتجاتكم بسرعة إلى مختلف الولايات.",
                 },
               ].map((item, index) => (
                 <motion.article
@@ -411,9 +411,9 @@ export function HomePage() {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(36,22,11,0.82),rgba(36,22,11,0.58))]" />
           <div className="relative z-10 mx-auto max-w-5xl px-6 text-center text-white">
             <p className="text-sm font-extrabold tracking-[0.28em] text-[#ffbf43]">تذوق الأصالة</p>
-            <h2 className="mt-4 text-4xl font-extrabold md:text-6xl">واجهة حديثة، قصة أقوى، وعسل يليق بهذه الصورة</h2>
+            <h2 className="mt-4 text-4xl font-extrabold md:text-6xl">اطلب عسلاً طبيعياً يليق بثقتك ومائدتك</h2>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/80">
-              هذه النسخة الجديدة تركز على الإحساس، الوضوح، وسهولة الطلب حتى يشعر العميل أن العلامة احترافية من أول لحظة.
+              نضع بين أيديكم عسلاً طبيعياً ومنتجات خلية مختارة بعناية، مع تجربة طلب سهلة وتوصيل يغطي مختلف ولايات الجزائر.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link to="/produits" className="rounded-full bg-[#f0a429] px-8 py-4 text-sm font-extrabold text-[#24160b]">
@@ -430,7 +430,7 @@ export function HomePage() {
         <section className="mx-auto max-w-7xl px-6 py-20">
           <motion.div {...revealUp} className="mb-12 text-center">
             <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">آراء عملائنا</p>
-            <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">انطباعات حقيقية داخل عرض أكثر أناقة</h2>
+            <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">كلمات حقيقية من زبائن وثقوا في جودة أطلس ميل</h2>
           </motion.div>
 
           <div className="grid gap-6 md:grid-cols-3">
