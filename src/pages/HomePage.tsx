@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -21,13 +21,91 @@ const revealUp = {
   transition: { duration: 0.7 },
 };
 
+type ShowcaseScene = {
+  step: string;
+  title: string;
+  text: string;
+  left: string;
+  right: string;
+};
+
+function ScrollStoryScene({
+  progress,
+  item,
+  index,
+}: {
+  progress: MotionValue<number>;
+  item: ShowcaseScene;
+  index: number;
+}) {
+  const segment = 1 / 3;
+  const start = index * segment;
+  const center = start + segment / 2;
+  const end = start + segment;
+
+  const opacity = useTransform(
+    progress,
+    [Math.max(0, start - 0.06), start + 0.04, center, end - 0.04, end + 0.04],
+    [0, 1, 1, 1, 0],
+  );
+  const titleY = useTransform(progress, [start, center, end], [90, 0, -120]);
+  const leftX = useTransform(progress, [start, center, end], [-220, 0, -90]);
+  const rightX = useTransform(progress, [start, center, end], [220, 0, 90]);
+  const leftRotate = useTransform(progress, [start, center, end], [-18, -9, -13]);
+  const rightRotate = useTransform(progress, [start, center, end], [18, 9, 13]);
+  const cardScale = useTransform(progress, [start, center, end], [0.92, 1, 0.96]);
+
+  return (
+    <motion.div style={{ opacity }} className="absolute inset-0 flex items-center justify-center">
+      <div className="grid w-full items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
+        <motion.div
+          style={{ x: leftX, rotate: leftRotate, scale: cardScale }}
+          className="relative mx-auto w-full max-w-[270px] md:max-w-[360px]"
+        >
+          <div className="absolute -top-6 left-5 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/65" />
+          <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
+            <img src={item.left} alt={item.title} className="h-[330px] w-full rounded-[22px] object-cover md:h-[470px]" />
+          </div>
+        </motion.div>
+
+        <motion.div
+          style={{ y: titleY, opacity, scale: cardScale }}
+          className="mx-auto max-w-sm text-center"
+        >
+          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_18px_40px_-20px_rgba(0,0,0,0.5)]">
+            {item.step}
+          </div>
+          <h3 className="mt-5 text-3xl font-extrabold text-[#24160b] md:text-5xl">{item.title}</h3>
+          <p className="mt-4 text-sm font-bold leading-8 text-[#6a533a] md:text-base">
+            {item.text}
+          </p>
+        </motion.div>
+
+        <motion.div
+          style={{ x: rightX, rotate: rightRotate, scale: cardScale }}
+          className="relative mx-auto w-full max-w-[270px] md:max-w-[360px]"
+        >
+          <div className="absolute -top-6 right-5 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/65" />
+          <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
+            <img src={item.right} alt={item.title} className="h-[330px] w-full rounded-[22px] object-cover md:h-[470px]" />
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
 export function HomePage() {
   const { products } = useCatalog();
   const heroRef = useRef<HTMLElement>(null);
+  const storyRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const { scrollYProgress: storyProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.18]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const storyIntroOpacity = useTransform(storyProgress, [0, 0.07], [1, 0]);
+  const storyIntroY = useTransform(storyProgress, [0, 0.07], [0, -40]);
 
   useEffect(() => {
     void trackPixel("PageView", undefined, {
@@ -47,7 +125,7 @@ export function HomePage() {
     [products],
   );
 
-  const showcasePairs = useMemo(() => {
+  const showcasePairs = useMemo<ShowcaseScene[]>(() => {
     const images = products
       .filter((product) => product.active)
       .flatMap((product) => product.images)
@@ -75,7 +153,7 @@ export function HomePage() {
       {
         step: "2",
         title: "بدون إضافات",
-        text: "نقدمه بطبيعته الكاملة، بلا خلط أو إضافات، حتى يصل بطعمه الحقيقي كما هو.",
+        text: "نقدمه بطبيعته الكاملة بلا خلط أو إضافات، حتى يصل بطعمه الحقيقي كما هو.",
         left: pool[2],
         right: pool[3],
       },
@@ -221,69 +299,32 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-[#f6f0e6] py-20">
+        <section ref={storyRef} className="relative h-[300vh] overflow-hidden bg-[#f6f0e6]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
-          <div className="mx-auto max-w-7xl px-6">
-            <motion.div
-              {...revealUp}
-              className="relative z-10 mb-16 text-center"
-            >
-              <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا نختار عسلنا؟</p>
-              <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">6 صور تتحرك مع السّكرول وتحكي 3 أسباب واضحة للثقة</h2>
-              <p className="mx-auto mt-4 max-w-2xl text-sm font-bold leading-8 text-[#6a533a] md:text-base">
-                كل مرحلتين من الصور تدخلان من الجانبين، وفي الوسط يظهر العنوان من الأسفل ليشرح قيمة حقيقية في المنتج.
-              </p>
-            </motion.div>
 
-            <div className="relative z-10 space-y-12 md:space-y-20">
-              {showcasePairs.map((item) => (
-                <div
-                  key={item.step}
-                  className="grid min-h-[72vh] items-center gap-6 md:grid-cols-[1fr_auto_1fr]"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -90, rotate: -12 }}
-                    whileInView={{ opacity: 1, x: 0, rotate: -7 }}
-                    viewport={{ once: true, amount: 0.35 }}
-                    transition={{ duration: 0.8, delay: 0.05 }}
-                    className="relative mx-auto w-full max-w-[320px] md:max-w-[360px]"
-                  >
-                    <div className="absolute -top-5 left-4 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/60" />
-                    <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
-                      <img src={item.left} alt={item.title} className="h-[380px] w-full rounded-[22px] object-cover md:h-[470px]" />
-                    </div>
-                  </motion.div>
+          <div className="sticky top-0 flex min-h-screen items-center">
+            <div className="mx-auto w-full max-w-7xl px-6">
+              <motion.div
+                style={{ opacity: storyIntroOpacity, y: storyIntroY }}
+                className="absolute inset-x-0 top-28 z-20 text-center"
+              >
+                <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا نختار عسلنا؟</p>
+                <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">3 مراحل داخل نفس البلوك</h2>
+                <p className="mx-auto mt-4 max-w-2xl text-sm font-bold leading-8 text-[#6a533a] md:text-base">
+                  مع كل سكرول، الصور الجديدة تدخل من اليمين واليسار، والعنوان الحالي يصعد للأعلى لتأخذ المرحلة التالية مكانه.
+                </p>
+              </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 80 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.45 }}
-                    transition={{ duration: 0.75, delay: 0.12 }}
-                    className="mx-auto max-w-sm text-center"
-                  >
-                    <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_18px_40px_-20px_rgba(0,0,0,0.5)]">
-                      {item.step}
-                    </div>
-                    <h3 className="mt-5 text-3xl font-extrabold text-[#24160b] md:text-5xl">{item.title}</h3>
-                    <p className="mt-4 text-sm font-bold leading-8 text-[#6a533a] md:text-base">
-                      {item.text}
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 90, rotate: 12 }}
-                    whileInView={{ opacity: 1, x: 0, rotate: 7 }}
-                    viewport={{ once: true, amount: 0.35 }}
-                    transition={{ duration: 0.8, delay: 0.05 }}
-                    className="relative mx-auto w-full max-w-[320px] md:max-w-[360px]"
-                  >
-                    <div className="absolute -top-5 right-4 h-full w-full rounded-[28px] border border-[#dbcdb8] bg-white/60" />
-                    <div className="overflow-hidden rounded-[28px] border border-[#d9ccb8] bg-white p-3 shadow-[0_28px_90px_-55px_rgba(112,69,8,0.35)]">
-                      <img src={item.right} alt={item.title} className="h-[380px] w-full rounded-[22px] object-cover md:h-[470px]" />
-                    </div>
-                  </motion.div>
-                </div>
-              ))}
+              <div className="relative min-h-screen">
+                {showcasePairs.map((item, index) => (
+                  <ScrollStoryScene
+                    key={item.step}
+                    progress={storyProgress}
+                    item={item}
+                    index={index}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>

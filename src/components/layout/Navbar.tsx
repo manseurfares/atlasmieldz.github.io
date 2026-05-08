@@ -55,7 +55,7 @@ export function Navbar() {
                   className={cn(
                     "text-sm font-bold transition",
                     transparent
-                      ? "text-white/90 hover:text-white"
+                      ? "text-white hover:text-white"
                       : active
                         ? "text-[#d18b11]"
                         : "text-[#24160b] hover:text-[#d18b11]",
@@ -67,7 +67,14 @@ export function Navbar() {
             })}
 
             <Link to="/produits">
-              <Button className="px-6">اطلب الآن</Button>
+              <Button
+                className={cn(
+                  "px-6",
+                  transparent && "border border-white/45 bg-white/10 text-white hover:bg-white/20 hover:text-white",
+                )}
+              >
+                اطلب الآن
+              </Button>
             </Link>
           </nav>
 
