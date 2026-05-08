@@ -106,6 +106,7 @@ export function HomePage() {
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
   const storyIntroOpacity = useTransform(storyProgress, [0, 0.08], [1, 0]);
   const storyIntroY = useTransform(storyProgress, [0, 0.08], [0, -46]);
+  const storySceneProgress = useTransform(storyProgress, [0.1, 0.92], [0, 1]);
 
   useEffect(() => {
     void trackPixel("PageView", undefined, {
@@ -300,10 +301,10 @@ export function HomePage() {
           </div>
         </section>
 
-        <section ref={storyRef} className="relative h-[300vh] overflow-hidden bg-[#f6f0e6]">
+        <section ref={storyRef} className="relative h-[420vh] overflow-hidden bg-[#f6f0e6]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-          <div className="sticky top-0 flex min-h-screen items-center overflow-hidden">
+          <div className="sticky top-0 h-screen overflow-hidden">
             <div className="mx-auto w-full max-w-7xl px-6">
               <motion.div
                 style={{ opacity: storyIntroOpacity, y: storyIntroY }}
@@ -316,9 +317,9 @@ export function HomePage() {
                 </p>
               </motion.div>
 
-              <div className="relative min-h-screen">
+              <div className="relative h-screen">
                 {showcasePairs.map((item, index) => (
-                  <ScrollStoryScene key={item.step} progress={storyProgress} item={item} index={index} />
+                  <ScrollStoryScene key={item.step} progress={storySceneProgress} item={item} index={index} />
                 ))}
               </div>
             </div>
