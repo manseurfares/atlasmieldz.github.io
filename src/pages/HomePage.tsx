@@ -311,12 +311,12 @@ export function HomePage() {
             </p>
           </motion.div>
 
-          <section ref={storyRef} className="relative h-[240vh] overflow-hidden md:h-[280vh]">
+          <section ref={storyRef} className="relative h-[240vh] md:h-[280vh]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-          <div className="sticky top-0 h-screen overflow-hidden">
+          <div className="sticky top-0 h-screen">
             <div className="mx-auto w-full max-w-7xl px-6">
-              <div className="relative flex h-screen items-center">
+              <div className="relative flex h-screen items-center overflow-hidden">
                 {showcasePairs.map((item, index) => (
                   <ScrollStoryScene key={item.step} progress={storySceneProgress} item={item} index={index} />
                 ))}
