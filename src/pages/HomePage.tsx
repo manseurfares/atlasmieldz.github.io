@@ -26,7 +26,7 @@ type ShowcaseScene = {
 
 function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number }) {
   return (
-    <section className="sticky top-0 flex h-screen items-center overflow-hidden rounded-t-[36px] bg-[#f6f0e6]">
+    <section className="sticky top-0 flex h-[82svh] items-center overflow-hidden rounded-t-[36px] bg-[#f6f0e6] md:h-screen">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
       <div className="relative mx-auto grid w-full max-w-7xl grid-cols-2 items-center gap-x-3 gap-y-5 px-4 md:gap-8 md:px-6 md:grid-cols-[1fr_auto_1fr]">
