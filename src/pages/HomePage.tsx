@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, type MotionValue, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowLeft, BadgeCheck, Sparkles, Truck } from "lucide-react";
 import { useCatalog } from "@/components/CatalogProvider";
 import { Footer } from "@/components/layout/Footer";
@@ -24,37 +24,16 @@ type ShowcaseScene = {
   right: string;
 };
 
-function ScrollStoryScene({
-  progress,
-  item,
-  index,
-}: {
-  progress: MotionValue<number>;
-  item: ShowcaseScene;
-  index: number;
-}) {
-  const segment = 1 / 3;
-  const start = index * segment;
-  const center = start + segment / 2;
-  const end = start + segment;
-
-  const opacity = useTransform(
-    progress,
-    [Math.max(0, start - 0.04), start + 0.05, center, end - 0.05, Math.min(1, end + 0.05)],
-    [0, 1, 1, 1, 0],
-  );
-  const titleY = useTransform(progress, [start, center, end], [100, 0, -120]);
-  const leftX = useTransform(progress, [start, center, end], [-240, 0, -70]);
-  const rightX = useTransform(progress, [start, center, end], [240, 0, 70]);
-  const leftRotate = useTransform(progress, [start, center, end], [-16, -8, -12]);
-  const rightRotate = useTransform(progress, [start, center, end], [16, 8, 12]);
-  const cardScale = useTransform(progress, [start, center, end], [0.9, 1, 0.95]);
-
+function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number }) {
   return (
-    <motion.div style={{ opacity }} className="absolute inset-0 flex items-center justify-center">
-      <div className="grid w-full items-center gap-8 md:grid-cols-[1fr_auto_1fr]">
+    <section className="sticky top-0 flex h-screen items-center overflow-hidden rounded-t-[36px] bg-[#f6f0e6]">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-6 md:grid-cols-[1fr_auto_1fr]">
         <motion.div
-          style={{ x: leftX, rotate: leftRotate, scale: cardScale }}
+          initial={{ opacity: 0, x: -160, rotate: -14, scale: 0.92 }}
+          whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? -8 : index === 1 ? -5 : -10, scale: 1 }}
+          viewport={{ once: true, amount: 0.55 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
         >
           <div className="absolute -left-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
@@ -67,7 +46,13 @@ function ScrollStoryScene({
           </div>
         </motion.div>
 
-        <motion.div style={{ y: titleY, opacity }} className="mx-auto max-w-sm text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 120 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.55 }}
+          transition={{ duration: 0.75, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-sm text-center"
+        >
           <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_20px_38px_-20px_rgba(0,0,0,0.45)]">
             {item.step}
           </div>
@@ -78,7 +63,10 @@ function ScrollStoryScene({
         </motion.div>
 
         <motion.div
-          style={{ x: rightX, rotate: rightRotate, scale: cardScale }}
+          initial={{ opacity: 0, x: 160, rotate: 14, scale: 0.92 }}
+          whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? 8 : index === 1 ? 5 : 10, scale: 1 }}
+          viewport={{ once: true, amount: 0.55 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
         >
           <div className="absolute -right-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
@@ -91,20 +79,17 @@ function ScrollStoryScene({
           </div>
         </motion.div>
       </div>
-    </motion.div>
+    </section>
   );
 }
 
 export function HomePage() {
   const { products } = useCatalog();
   const heroRef = useRef<HTMLElement>(null);
-  const storyRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const { scrollYProgress: storyProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.18]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const storySceneProgress = useTransform(storyProgress, [0.06, 0.94], [0, 1]);
 
   useEffect(() => {
     void trackPixel("PageView", undefined, {
@@ -311,19 +296,11 @@ export function HomePage() {
             </p>
           </motion.div>
 
-          <section ref={storyRef} className="relative h-[240vh] md:h-[280vh]">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
-
-          <div className="sticky top-0 h-screen">
-            <div className="mx-auto w-full max-w-7xl px-6">
-              <div className="relative flex h-screen items-center overflow-hidden">
-                {showcasePairs.map((item, index) => (
-                  <ScrollStoryScene key={item.step} progress={storySceneProgress} item={item} index={index} />
-                ))}
-              </div>
-            </div>
+          <div className="relative">
+            {showcasePairs.map((item, index) => (
+              <StickyStoryPanel key={item.step} item={item} index={index} />
+            ))}
           </div>
-          </section>
         </section>
 
         <section className="mx-auto max-w-7xl px-6 py-20">
