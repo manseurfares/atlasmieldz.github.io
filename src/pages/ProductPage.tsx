@@ -29,6 +29,24 @@ export function ProductPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<"domicile" | "bureau">("domicile");
   const [submitting, setSubmitting] = useState(false);
 
+  const assuranceItems = [
+    {
+      icon: CheckCircle2,
+      title: "فحص وجودة",
+      description: "هذا العسل خاضع للتحاليل المخبرية ومُدرج ضمن معايير الجودة الخاصة بالتغذية.",
+    },
+    {
+      icon: Gift,
+      title: "اختيار راقٍ",
+      description: "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
+    },
+    {
+      icon: Truck,
+      title: "طلب مرن",
+      description: "الدفع عند الاستلام مع خدمة توصيل مرنة إلى مختلف الولايات.",
+    },
+  ];
+
   const scrollToOrderForm = () => {
     const form = document.getElementById("formulaire-commande");
     if (!form) return;
@@ -54,23 +72,27 @@ export function ProductPage() {
 
   useEffect(() => {
     if (!product || !weightOption) return;
-    void trackPixel("ViewContent", {
-      content_ids: [product.id],
-      content_name: product.name,
-      content_type: "product",
-      value: weightOption.price,
-      currency: "DZD",
-    }, {
-      source: "src/pages/ProductPage.tsx",
-      productId: product.id,
-    });
+    void trackPixel(
+      "ViewContent",
+      {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: "product",
+        value: weightOption.price,
+        currency: "DZD",
+      },
+      {
+        source: "src/pages/ProductPage.tsx",
+        productId: product.id,
+      },
+    );
   }, [product, weightOption]);
 
   if (!loading && !product) {
     return (
       <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
         <Navbar />
-        <main className="mx-auto flex max-w-4xl flex-col items-center justify-center px-6 pt-36 pb-24 text-center">
+        <main className="mx-auto flex max-w-4xl flex-col items-center justify-center px-6 pb-24 pt-36 text-center">
           <h1 className="text-4xl font-extrabold">المنتج غير متوفر</h1>
           <p className="mt-4 text-base text-[#6b5640]">هذا الرابط غير صالح أو أن المنتج لم يعد موجوداً.</p>
           <Link to="/produits" className="mt-8 rounded-full bg-[#f0a429] px-7 py-4 text-sm font-extrabold text-[#24160b]">
@@ -93,7 +115,7 @@ export function ProductPage() {
   return (
     <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-6 pt-32 pb-32 md:pb-20">
+      <main className="mx-auto max-w-7xl px-6 pb-32 pt-32 md:pb-20">
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <section>
             <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_28px_80px_-58px_rgba(112,69,8,0.55)]">
@@ -105,7 +127,9 @@ export function ProductPage() {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveImage(index)}
-                  className={`overflow-hidden rounded-2xl border ${activeImage === index ? "border-[#f0a429]" : "border-[#ead7af]"}`}
+                  className={`overflow-hidden rounded-2xl border ${
+                    activeImage === index ? "border-[#f0a429]" : "border-[#ead7af]"
+                  }`}
                 >
                   <img src={image} alt="" className="aspect-square h-full w-full object-cover" />
                 </button>
@@ -114,7 +138,9 @@ export function ProductPage() {
           </section>
 
           <section>
-            <Link to="/produits" className="text-sm font-extrabold text-[#d18b11]">العودة إلى المنتجات</Link>
+            <Link to="/produits" className="text-sm font-extrabold text-[#d18b11]">
+              العودة إلى المنتجات
+            </Link>
             <h1 className="mt-3 text-4xl font-extrabold md:text-5xl">{product.name}</h1>
             <div className="mt-4 flex items-end gap-3">
               <span className="text-3xl font-extrabold text-[#d18b11]">{formatDzd(weightOption.price)}</span>
@@ -132,7 +158,9 @@ export function ProductPage() {
                     key={option.label}
                     type="button"
                     onClick={() => setSelectedWeight(option.label)}
-                    className={`rounded-[24px] border p-4 text-right ${selectedWeight === option.label ? "border-[#f0a429] bg-[#fff2d4]" : "border-[#ead7af] bg-white"}`}
+                    className={`rounded-[24px] border p-4 text-right ${
+                      selectedWeight === option.label ? "border-[#f0a429] bg-[#fff2d4]" : "border-[#ead7af] bg-white"
+                    }`}
                   >
                     <p className="text-base font-extrabold">{option.label}</p>
                     <p className="mt-2 text-lg font-extrabold text-[#d18b11]">{formatDzd(option.price)}</p>
@@ -144,18 +172,25 @@ export function ProductPage() {
               </div>
             </div>
 
-            <div className="mt-8 grid gap-3">
-              {[
-                "تنويه: هذا العسل خاضع للتحاليل المخبرية ومُدرج ضمن معايير الجودة الخاصة بالتغذية.",
-                "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
-                "الدفع عند الاستلام مع خدمة توصيل مرنة.",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <CheckCircle2 size={18} className="mt-1 shrink-0 text-[#d18b11]" />
-                  <p className="text-sm leading-7 text-[#5b4630]">{item}</p>
-                </div>
-              ))}
-            </div>
+            <section className="mt-8 overflow-hidden rounded-[30px] border border-[#ead7af] bg-gradient-to-b from-[#fffdf8] via-[#fff8eb] to-[#fff2dc] shadow-[0_26px_70px_-58px_rgba(112,69,8,0.55)]">
+              <div className="border-b border-[#ead7af] px-5 py-4 md:px-6">
+                <p className="text-xs font-extrabold tracking-[0.24em] text-[#d18b11]">ATLAS MIEL</p>
+                <h3 className="mt-2 text-lg font-extrabold text-[#24160b]">ضمانات المنتج</h3>
+              </div>
+              <div className="divide-y divide-[#ead7af]">
+                {assuranceItems.map((item) => (
+                  <div key={item.title} className="flex items-start gap-4 px-5 py-4 md:px-6">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#f2d18a] bg-white/90 text-[#d18b11] shadow-[0_14px_28px_-22px_rgba(112,69,8,0.65)]">
+                      <item.icon size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-extrabold text-[#24160b]">{item.title}</p>
+                      <p className="mt-1 text-sm leading-7 text-[#5b4630]">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             <div className="mt-8 grid gap-3 md:grid-cols-2">
               <div className="rounded-[24px] border border-[#ead7af] bg-white p-4">
@@ -194,14 +229,16 @@ export function ProductPage() {
               void createOrder({
                 customerName: name.trim(),
                 customerPhone: phone.trim(),
-                items: [{
-                  productId: product.id,
-                  productName: product.name,
-                  image: product.images[0],
-                  weight: weightOption.label,
-                  price: weightOption.price,
-                  quantity,
-                }],
+                items: [
+                  {
+                    productId: product.id,
+                    productName: product.name,
+                    image: product.images[0],
+                    weight: weightOption.label,
+                    price: weightOption.price,
+                    quantity,
+                  },
+                ],
                 subtotal,
                 shipping,
                 total,
@@ -211,27 +248,39 @@ export function ProductPage() {
                   deliveryMethod,
                 },
                 paymentMethod: "الدفع عند الاستلام",
-              }).then((order) => {
-                window.sessionStorage.setItem("atlas-last-order", JSON.stringify({
-                  orderNumber: order.orderNumber,
-                  productId: product.id,
-                  productName: product.name,
-                  quantity,
-                  value: total,
-                  currency: "DZD",
-                  pixelSent: false,
-                }));
-                navigate(`/merci?order=${encodeURIComponent(order.orderNumber)}`, { replace: true });
-              }).catch((error: Error) => {
-                toast.error(error.message);
-              }).finally(() => {
-                setSubmitting(false);
-              });
+              })
+                .then((order) => {
+                  window.sessionStorage.setItem(
+                    "atlas-last-order",
+                    JSON.stringify({
+                      orderNumber: order.orderNumber,
+                      productId: product.id,
+                      productName: product.name,
+                      quantity,
+                      value: total,
+                      currency: "DZD",
+                      pixelSent: false,
+                    }),
+                  );
+                  navigate(`/merci?order=${encodeURIComponent(order.orderNumber)}`, { replace: true });
+                })
+                .catch((error: Error) => {
+                  toast.error(error.message);
+                })
+                .finally(() => {
+                  setSubmitting(false);
+                });
             }}
           >
             <div className="grid gap-4 md:grid-cols-2">
               <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="الاسم واللقب" />
-              <Input value={phone} onChange={(event) => setPhone(event.target.value)} inputMode="numeric" maxLength={10} placeholder="رقم الهاتف" />
+              <Input
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                inputMode="numeric"
+                maxLength={10}
+                placeholder="رقم الهاتف"
+              />
             </div>
 
             <select
@@ -264,7 +313,11 @@ export function ProductPage() {
               <p className="mb-3 text-sm font-extrabold">طريقة التوصيل</p>
               <div className="flex flex-wrap gap-4">
                 <label className="flex items-center gap-2 rounded-full border border-[#ead7af] px-4 py-3">
-                  <input type="radio" checked={deliveryMethod === "domicile"} onChange={() => setDeliveryMethod("domicile")} />
+                  <input
+                    type="radio"
+                    checked={deliveryMethod === "domicile"}
+                    onChange={() => setDeliveryMethod("domicile")}
+                  />
                   منزل
                 </label>
                 <label className="flex items-center gap-2 rounded-full border border-[#ead7af] px-4 py-3">
@@ -282,7 +335,9 @@ export function ProductPage() {
             ) : null}
 
             <div className="rounded-2xl bg-[#f6f1e8] px-4 py-4 text-sm font-bold text-[#6b5640]">
-              {wilaya ? `سعر التوصيل: ${freeShipping ? "مجاني" : formatDzd(shipping)}` : "يرجى اختيار الولاية لحساب التوصيل"}
+              {wilaya
+                ? `سعر التوصيل: ${freeShipping ? "مجاني" : formatDzd(shipping)}`
+                : "يرجى اختيار الولاية لحساب التوصيل"}
             </div>
             <div className="rounded-2xl bg-black px-4 py-4 text-lg font-extrabold text-white">
               المجموع الإجمالي: {formatDzd(total)}
@@ -296,7 +351,7 @@ export function ProductPage() {
       </main>
       <div className="fixed inset-x-4 bottom-4 z-40 md:hidden">
         <Button className="w-full py-4 shadow-[0_18px_45px_rgba(36,22,11,0.22)]" onClick={scrollToOrderForm}>
-          اشتر الآن
+          اطلب الان
         </Button>
       </div>
       <Footer />

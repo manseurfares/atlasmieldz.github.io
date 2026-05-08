@@ -72,12 +72,14 @@ function serializeProduct(input: ProductInput, id?: string) {
 
 function parseWeightOptions(row: Record<string, unknown>): ProductWeightOption[] {
   const weights = Array.isArray(row.weights) ? row.weights.map(String) : [];
-  const prices = row.weight_prices && typeof row.weight_prices === "object"
-    ? row.weight_prices as Record<string, unknown>
-    : {};
-  const comparePrices = row.weight_compare_prices && typeof row.weight_compare_prices === "object"
-    ? row.weight_compare_prices as Record<string, unknown>
-    : {};
+  const prices =
+    row.weight_prices && typeof row.weight_prices === "object"
+      ? (row.weight_prices as Record<string, unknown>)
+      : {};
+  const comparePrices =
+    row.weight_compare_prices && typeof row.weight_compare_prices === "object"
+      ? (row.weight_compare_prices as Record<string, unknown>)
+      : {};
 
   const options = weights.map((label) => ({
     label,
@@ -104,16 +106,17 @@ function parseProduct(row: Record<string, unknown>): ProductRecord {
 }
 
 function parseOrder(row: Record<string, unknown>): OrderRecord {
-  const shippingAddress = row.shipping_address && typeof row.shipping_address === "object"
-    ? row.shipping_address as OrderRecord["shippingAddress"]
-    : { wilaya: "", address: "", deliveryMethod: "domicile" as const };
+  const shippingAddress =
+    row.shipping_address && typeof row.shipping_address === "object"
+      ? (row.shipping_address as OrderRecord["shippingAddress"])
+      : { wilaya: "", address: "", deliveryMethod: "domicile" as const };
 
   return {
     id: String(row.id ?? ""),
     orderNumber: String(row.order_number ?? ""),
     customerName: String(row.customer_name ?? ""),
     customerPhone: String(row.customer_phone ?? ""),
-    items: Array.isArray(row.items) ? row.items as OrderRecord["items"] : [],
+    items: Array.isArray(row.items) ? (row.items as OrderRecord["items"]) : [],
     subtotal: Number(row.subtotal ?? 0),
     shipping: Number(row.shipping ?? 0),
     total: Number(row.total ?? 0),
@@ -166,10 +169,7 @@ export async function fetchPublicProducts() {
 }
 
 export async function fetchAdminProducts() {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -187,12 +187,7 @@ export async function createProduct(input: ProductInput) {
 
 export async function updateProduct(id: string, input: ProductInput) {
   const payload = serializeProduct(input);
-  const { data, error } = await supabase
-    .from("products")
-    .update(payload)
-    .eq("id", id)
-    .select()
-    .single();
+  const { data, error } = await supabase.from("products").update(payload).eq("id", id).select().single();
 
   if (error) throw new Error(error.message);
   return parseProduct(data as Record<string, unknown>);
@@ -244,10 +239,7 @@ export async function createOrder(input: OrderInput) {
 }
 
 export async function fetchOrders() {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
   return (data ?? []).map((row) => parseOrder(row as Record<string, unknown>));
@@ -264,11 +256,7 @@ export async function deleteOrder(id: string) {
 }
 
 async function readTrashBucket() {
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("value")
-    .eq("key", ORDER_TRASH_KEY)
-    .maybeSingle();
+  const { data, error } = await supabase.from("site_settings").select("value").eq("key", ORDER_TRASH_KEY).maybeSingle();
 
   if (error || !data?.value || typeof data.value !== "object") {
     return [] as OrderRecord[];
@@ -329,34 +317,31 @@ export async function fetchAdminUsers() {
   const { data, error } = await supabase
     .from("admin_users")
     .select("user_id, email, role, created_at")
-    .order("created_at", { ascending: false })
-    .limit(50);
+    .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
   return (data ?? []).map((row) => parseAdminUser(row as Record<string, unknown>));
 }
 
 export async function createAdminUser(email: string, password: string, role: AdminRole) {
-  const worker = createSecondarySupabaseClient();
   const cleanEmail = email.trim().toLowerCase();
-  const { data, error } = await worker.auth.signUp({ email: cleanEmail, password });
-  if (error) throw new Error(error.message);
-  if (!data.user?.id) throw new Error("تعذر إنشاء المستخدم.");
+  const cleanPassword = password.trim();
 
-  const { error: adminError } = await supabase.from("admin_users").insert({
-    user_id: data.user.id,
-    email: cleanEmail,
-    role,
+  if (!cleanEmail || !cleanPassword) {
+    throw new Error("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+  }
+
+  const { error } = await supabase.rpc("create_backoffice_user", {
+    target_email: cleanEmail,
+    target_password: cleanPassword,
+    target_role: role,
   });
 
-  if (adminError) throw new Error(adminError.message);
+  if (error) throw new Error(error.message);
 }
 
 export async function updateAdminUserRole(userId: string, role: AdminRole) {
-  const { error } = await supabase
-    .from("admin_users")
-    .update({ role })
-    .eq("user_id", userId);
+  const { error } = await supabase.from("admin_users").update({ role }).eq("user_id", userId);
   if (error) throw new Error(error.message);
 }
 
@@ -366,11 +351,7 @@ export async function deleteAdminUser(userId: string) {
 }
 
 export async function fetchMetaPixelSettings(): Promise<MetaPixelSettings> {
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("value")
-    .eq("key", PIXEL_SETTINGS_KEY)
-    .maybeSingle();
+  const { data, error } = await supabase.from("site_settings").select("value").eq("key", PIXEL_SETTINGS_KEY).maybeSingle();
 
   if (error || !data?.value || typeof data.value !== "object") {
     return { enabled: false, pixelId: "" };
