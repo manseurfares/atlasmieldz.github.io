@@ -28,20 +28,38 @@ function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number 
   return (
     <section className="sticky top-0 flex h-screen items-center overflow-hidden rounded-t-[36px] bg-[#f6f0e6]">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-6 md:grid-cols-[1fr_auto_1fr]">
+
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-2 items-center gap-x-3 gap-y-5 px-4 md:gap-8 md:px-6 md:grid-cols-[1fr_auto_1fr]">
         <motion.div
           initial={{ opacity: 0, x: -160, rotate: -14, scale: 0.92 }}
           whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? -8 : index === 1 ? -5 : -10, scale: 1 }}
           viewport={{ once: true, amount: 0.55 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
+          className="relative mx-auto w-full max-w-[145px] justify-self-end md:max-w-[360px]"
         >
-          <div className="absolute -left-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
-          <div className="relative overflow-hidden rounded-[28px] border border-[#dbc9a8] bg-white p-3 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)]">
+          <div className="absolute -left-2 top-2 h-full w-full rounded-[18px] border border-[#deceb5] bg-white/70 md:-left-4 md:top-4 md:rounded-[28px]" />
+          <div className="relative overflow-hidden rounded-[18px] border border-[#dbc9a8] bg-white p-2 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)] md:rounded-[28px] md:p-3">
             <img
               src={item.left}
               alt={item.title}
-              className="h-[320px] w-full rounded-[22px] object-cover md:h-[470px]"
+              className="h-[190px] w-full rounded-[14px] object-cover md:h-[470px] md:rounded-[22px]"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 160, rotate: 14, scale: 0.92 }}
+          whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? 8 : index === 1 ? 5 : 10, scale: 1 }}
+          viewport={{ once: true, amount: 0.55 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-[145px] justify-self-start md:order-3 md:max-w-[360px]"
+        >
+          <div className="absolute -right-2 top-2 h-full w-full rounded-[18px] border border-[#deceb5] bg-white/70 md:-right-4 md:top-4 md:rounded-[28px]" />
+          <div className="relative overflow-hidden rounded-[18px] border border-[#dbc9a8] bg-white p-2 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)] md:rounded-[28px] md:p-3">
+            <img
+              src={item.right}
+              alt={item.title}
+              className="h-[190px] w-full rounded-[14px] object-cover md:h-[470px] md:rounded-[22px]"
             />
           </div>
         </motion.div>
@@ -51,32 +69,15 @@ function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.55 }}
           transition={{ duration: 0.75, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-sm text-center"
+          className="order-3 col-span-2 mx-auto max-w-sm px-2 text-center md:order-2 md:col-span-1"
         >
-          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#24160b] text-lg font-extrabold text-white shadow-[0_20px_38px_-20px_rgba(0,0,0,0.45)]">
+          <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#24160b] text-sm font-extrabold text-white shadow-[0_20px_38px_-20px_rgba(0,0,0,0.45)] md:h-14 md:w-14 md:text-lg">
             {item.step}
           </div>
-          <h3 className="mt-5 text-3xl font-extrabold text-[#24160b] md:text-5xl">{item.title}</h3>
-          <p className="mt-4 text-sm font-bold leading-8 text-[#6a533a] md:text-base">
+          <h3 className="mt-4 text-2xl font-extrabold text-[#24160b] md:mt-5 md:text-5xl">{item.title}</h3>
+          <p className="mt-3 text-xs font-bold leading-7 text-[#6a533a] md:mt-4 md:text-base md:leading-8">
             {item.text}
           </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 160, rotate: 14, scale: 0.92 }}
-          whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? 8 : index === 1 ? 5 : 10, scale: 1 }}
-          viewport={{ once: true, amount: 0.55 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-[260px] md:max-w-[360px]"
-        >
-          <div className="absolute -right-4 top-4 h-full w-full rounded-[28px] border border-[#deceb5] bg-white/70" />
-          <div className="relative overflow-hidden rounded-[28px] border border-[#dbc9a8] bg-white p-3 shadow-[0_28px_90px_-58px_rgba(112,69,8,0.38)]">
-            <img
-              src={item.right}
-              alt={item.title}
-              className="h-[320px] w-full rounded-[22px] object-cover md:h-[470px]"
-            />
-          </div>
         </motion.div>
       </div>
     </section>
