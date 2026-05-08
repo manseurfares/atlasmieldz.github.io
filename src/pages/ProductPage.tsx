@@ -164,14 +164,14 @@ export function ProductPage() {
               {assuranceItems.map((item) => (
                 <div
                   key={item}
-                  className="flex min-h-[58px] flex-row-reverse items-center justify-between rounded-[20px] border border-[#eadcc0] bg-white px-5 py-4 shadow-[0_8px_20px_-18px_rgba(112,69,8,0.38)]"
+                  className="flex min-h-[48px] items-center justify-between rounded-[18px] border border-[#eadcc0] bg-white px-4 py-3 shadow-[0_8px_20px_-18px_rgba(112,69,8,0.38)]"
                 >
-                  <div className="mr-3 flex h-7 w-7 shrink-0 items-center justify-center text-[#f0a429]">
-                    <CheckCircle2 size={19} strokeWidth={1.9} />
-                  </div>
-                  <p className="flex-1 text-right text-[15px] font-extrabold leading-none text-[#24160b] md:text-base">
+                  <p className="flex-1 text-right text-[14px] font-extrabold leading-none text-[#24160b] md:text-[15px]">
                     {item}
                   </p>
+                  <div className="ml-3 flex h-7 w-7 shrink-0 items-center justify-center text-[#f0a429]">
+                    <CheckCircle2 size={19} strokeWidth={1.9} />
+                  </div>
                 </div>
               ))}
             </section>
