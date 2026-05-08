@@ -29,12 +29,6 @@ export function ProductPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<"domicile" | "bureau">("domicile");
   const [submitting, setSubmitting] = useState(false);
 
-  const assuranceItems = [
-    "منتج طبيعي مختار بعناية",
-    "تغليف محترف وآمن",
-    "الدفع عند الاستلام",
-  ];
-
   const scrollToOrderForm = () => {
     const form = document.getElementById("formulaire-commande");
     if (!form) return;
@@ -160,21 +154,18 @@ export function ProductPage() {
               </div>
             </div>
 
-            <section className="mt-8 space-y-3">
-              {assuranceItems.map((item) => (
-                <div
-                  key={item}
-                  className="flex min-h-[48px] items-center justify-between rounded-[18px] border border-[#eadcc0] bg-white px-4 py-3 shadow-[0_8px_20px_-18px_rgba(112,69,8,0.38)]"
-                >
-                  <p className="flex-1 text-right text-[14px] font-extrabold leading-none text-[#24160b] md:text-[15px]">
-                    {item}
-                  </p>
-                  <div className="ml-3 flex h-7 w-7 shrink-0 items-center justify-center text-[#f0a429]">
-                    <CheckCircle2 size={19} strokeWidth={1.9} />
-                  </div>
+            <div className="mt-8 grid gap-3">
+              {[
+                "تنويه: هذا العسل خاضع للتحاليل المخبرية ومُدرج ضمن معايير الجودة الخاصة بالتغذية.",
+                "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
+                "الدفع عند الاستلام مع خدمة توصيل مرنة.",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm">
+                  <CheckCircle2 size={18} className="mt-1 shrink-0 text-[#d18b11]" />
+                  <p className="text-sm leading-7 text-[#5b4630]">{item}</p>
                 </div>
               ))}
-            </section>
+            </div>
 
             <div className="mt-8 grid gap-3 md:grid-cols-2">
               <div className="rounded-[24px] border border-[#ead7af] bg-white p-4">
