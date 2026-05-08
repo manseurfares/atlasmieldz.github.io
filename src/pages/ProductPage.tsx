@@ -174,9 +174,9 @@ export function ProductPage() {
                 "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
                 "الدفع عند الاستلام مع خدمة توصيل مرنة.",
               ].map((item) => (
-                <div key={item} className="flex items-start rounded-2xl bg-white px-4 py-3 shadow-sm">
+                <div key={item} className="flex flex-row-reverse items-start rounded-2xl bg-white px-4 py-3 shadow-sm">
+                  <CheckCircle2 size={18} className="mt-1 ml-3 shrink-0 text-[#d18b11]" />
                   <p className="flex-1 text-right text-sm leading-7 text-[#5b4630]">{item}</p>
-                  <CheckCircle2 size={18} className="mt-1 mr-3 shrink-0 text-[#d18b11]" />
                 </div>
               ))}
             </div>
