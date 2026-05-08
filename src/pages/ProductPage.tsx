@@ -30,21 +30,9 @@ export function ProductPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const assuranceItems = [
-    {
-      icon: CheckCircle2,
-      title: "فحص وجودة",
-      description: "هذا العسل خاضع للتحاليل المخبرية ومُدرج ضمن معايير الجودة الخاصة بالتغذية.",
-    },
-    {
-      icon: Gift,
-      title: "اختيار راقٍ",
-      description: "منتج طبيعي مختار بعناية ومناسب للإهداء أو الاستهلاك اليومي.",
-    },
-    {
-      icon: Truck,
-      title: "طلب مرن",
-      description: "الدفع عند الاستلام مع خدمة توصيل مرنة إلى مختلف الولايات.",
-    },
+    "منتج طبيعي مختار بعناية",
+    "تغليف محترف وآمن",
+    "الدفع عند الاستلام",
   ];
 
   const scrollToOrderForm = () => {
@@ -172,24 +160,20 @@ export function ProductPage() {
               </div>
             </div>
 
-            <section className="mt-8 overflow-hidden rounded-[30px] border border-[#ead7af] bg-gradient-to-b from-[#fffdf8] via-[#fff8eb] to-[#fff2dc] shadow-[0_26px_70px_-58px_rgba(112,69,8,0.55)]">
-              <div className="border-b border-[#ead7af] px-5 py-4 md:px-6">
-                <p className="text-xs font-extrabold tracking-[0.24em] text-[#d18b11]">ATLAS MIEL</p>
-                <h3 className="mt-2 text-lg font-extrabold text-[#24160b]">ضمانات المنتج</h3>
-              </div>
-              <div className="divide-y divide-[#ead7af]">
-                {assuranceItems.map((item) => (
-                  <div key={item.title} className="flex items-start gap-4 px-5 py-4 md:px-6">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#f2d18a] bg-white/90 text-[#d18b11] shadow-[0_14px_28px_-22px_rgba(112,69,8,0.65)]">
-                      <item.icon size={18} />
-                    </div>
-                    <div>
-                      <p className="text-sm font-extrabold text-[#24160b]">{item.title}</p>
-                      <p className="mt-1 text-sm leading-7 text-[#5b4630]">{item.description}</p>
-                    </div>
+            <section className="mt-8 space-y-3">
+              {assuranceItems.map((item) => (
+                <div
+                  key={item}
+                  className="flex min-h-[58px] items-center justify-between rounded-[20px] border border-[#f0e2c4] bg-white px-5 py-4 shadow-[0_10px_24px_-20px_rgba(112,69,8,0.45)]"
+                >
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center text-[#f0a429]">
+                    <CheckCircle2 size={20} strokeWidth={1.8} />
                   </div>
-                ))}
-              </div>
+                  <p className="text-right text-[15px] font-extrabold leading-none text-[#24160b] md:text-base">
+                    {item}
+                  </p>
+                </div>
+              ))}
             </section>
 
             <div className="mt-8 grid gap-3 md:grid-cols-2">
