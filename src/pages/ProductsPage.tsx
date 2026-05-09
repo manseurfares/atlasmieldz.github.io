@@ -7,6 +7,7 @@ import { formatDzd } from "@/lib/utils";
 
 export function ProductsPage() {
   const { products, loading } = useCatalog();
+  const visibleProducts = products.filter((product) => product.active);
 
   return (
     <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
@@ -17,7 +18,7 @@ export function ProductsPage() {
           <h1 className="mt-3 text-4xl font-extrabold md:text-6xl">اختر المنتج المناسب لك</h1>
         </div>
 
-        {loading ? (
+        {loading && visibleProducts.length === 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="h-[420px] animate-pulse rounded-[28px] bg-[#f6ead0]" />
@@ -25,7 +26,7 @@ export function ProductsPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {products.filter((product) => product.active).map((product, index) => (
+            {visibleProducts.map((product, index) => (
               <motion.article
                 key={product.id}
                 initial={{ opacity: 0, y: 34 }}
