@@ -6,6 +6,7 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
+import { DEFAULT_PRODUCTS } from "@/lib/constants";
 import { fetchPublicProducts } from "@/lib/supabase";
 import type { ProductRecord } from "@/types";
 
@@ -18,7 +19,7 @@ interface CatalogContextValue {
 const CatalogContext = createContext<CatalogContextValue | null>(null);
 
 export function CatalogProvider({ children }: PropsWithChildren) {
-  const [products, setProducts] = useState<ProductRecord[]>([]);
+  const [products, setProducts] = useState<ProductRecord[]>(DEFAULT_PRODUCTS);
   const [loading, setLoading] = useState(true);
 
   const reload = async () => {
