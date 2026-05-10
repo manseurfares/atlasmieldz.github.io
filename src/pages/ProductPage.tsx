@@ -297,6 +297,28 @@ export function ProductPage() {
                 });
             }}
           >
+            <div className="space-y-3">
+              <p className="text-right text-sm font-extrabold text-[#7a5a27]">اختر الوزن</p>
+              <div className="grid grid-cols-2 gap-3">
+                {product.weightOptions.map((option) => (
+                  <button
+                    key={`form-${option.label}`}
+                    type="button"
+                    onClick={() => setSelectedWeight(option.label)}
+                    className={`rounded-[24px] border p-4 text-right transition-colors ${
+                      selectedWeight === option.label ? "border-[#f0a429] bg-[#fff2d4]" : "border-[#ead7af] bg-white"
+                    }`}
+                  >
+                    <p className="text-base font-extrabold">{option.label}</p>
+                    <p className="mt-2 text-lg font-extrabold text-[#d18b11]">{formatDzd(option.price)}</p>
+                    {option.comparePrice && option.comparePrice > option.price ? (
+                      <p className="text-sm font-bold text-[#8e7a66] line-through">{formatDzd(option.comparePrice)}</p>
+                    ) : null}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
               <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="الاسم واللقب" />
               <Input

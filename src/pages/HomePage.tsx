@@ -222,6 +222,7 @@ export function HomePage() {
               <Link
                 to="/histoire"
                 className="inline-flex items-center justify-center rounded-full border border-white/50 px-8 py-4 text-sm font-extrabold text-white hover:text-white"
+                style={{ color: "#ffffff" }}
               >
                 اكتشف قصتنا
               </Link>
