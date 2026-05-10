@@ -172,7 +172,10 @@ export function HomePage() {
         </motion.video>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.58),rgba(0,0,0,0.28),rgba(0,0,0,0.8))]" />
 
-        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24">
+        <motion.div
+          style={{ opacity: heroOpacity }}
+          className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-24 md:-translate-y-10"
+        >
           <div className="mx-auto max-w-4xl text-center">
             <motion.span
               initial={{ opacity: 0, y: 22 }}
@@ -207,7 +210,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.35 }}
-              className="mt-10 flex flex-col justify-center gap-4 sm:flex-row"
+              className="mt-8 flex flex-col justify-center gap-4 sm:flex-row md:mt-9"
             >
               <Link
                 to="/produits"
@@ -218,7 +221,7 @@ export function HomePage() {
               </Link>
               <Link
                 to="/histoire"
-                className="inline-flex items-center justify-center rounded-full border border-white/50 px-8 py-4 text-sm font-extrabold text-white"
+                className="inline-flex items-center justify-center rounded-full border border-white/50 px-8 py-4 text-sm font-extrabold text-white hover:text-white"
               >
                 اكتشف قصتنا
               </Link>
