@@ -323,14 +323,14 @@ export function ProductPage() {
 
             <Input value={address} onChange={(event) => setAddress(event.target.value)} placeholder="العنوان الدقيق" />
 
-            <div className="flex items-center justify-between rounded-[18px] border border-[#f0d28d] bg-[#fff7e5] px-4 py-2.5">
-              <span className="text-sm font-extrabold text-[#7a5a27]">الكمية</span>
+            <div className="space-y-2">
+              <p className="text-right text-sm font-extrabold text-[#7a5a27]">الكمية</p>
               <Input
                 type="number"
                 min={1}
                 value={quantity}
                 onChange={(event) => setQuantity(Math.max(1, Number(event.target.value || 1)))}
-                className="h-10 w-20 rounded-xl px-3 text-center text-sm font-extrabold"
+                className="h-12 rounded-2xl border-[#e7d2a6] text-center text-sm font-extrabold focus-visible:ring-[#f0a429]"
               />
             </div>
 
