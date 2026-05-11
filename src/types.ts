@@ -6,6 +6,7 @@ export type OrderStatus =
   | "cancelled";
 
 export type AdminRole = "admin" | "employee";
+export type ProductKind = "product" | "pack";
 
 export interface ProductWeightOption {
   label: string;
@@ -15,6 +16,7 @@ export interface ProductWeightOption {
 
 export interface ProductRecord {
   id: string;
+  productType: ProductKind;
   name: string;
   description: string;
   images: string[];
@@ -27,6 +29,7 @@ export interface ProductRecord {
 }
 
 export interface ProductInput {
+  productType: ProductKind;
   name: string;
   description: string;
   images: string[];

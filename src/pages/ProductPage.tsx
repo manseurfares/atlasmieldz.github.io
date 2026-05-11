@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { CheckCircle2, Gift, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
@@ -8,17 +8,22 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_PRICES, WILAYAS } from "@/lib/constants";
 import { trackPixel } from "@/lib/pixel";
-import { createOrder } from "@/lib/supabase";
+import { createOrder, fetchPublicProducts } from "@/lib/supabase";
+import type { ProductRecord } from "@/types";
 import { decodeSafeId, formatDzd } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function ProductPage() {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { products, loading } = useCatalog();
+  const isPackPage = location.pathname.startsWith("/packs");
   const productId = decodeSafeId(id);
-  const product = products.find((entry) => entry.id === productId);
+  const [packProducts, setPackProducts] = useState<ProductRecord[]>([]);
+  const [packLoading, setPackLoading] = useState(false);
+  const product = (isPackPage ? packProducts : products).find((entry) => entry.id === productId);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState("");
   const [name, setName] = useState("");
@@ -34,6 +39,14 @@ export function ProductPage() {
     if (!form) return;
     form.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  useEffect(() => {
+    if (!isPackPage) return;
+    setPackLoading(true);
+    void fetchPublicProducts("pack")
+      .then((items) => setPackProducts(items))
+      .finally(() => setPackLoading(false));
+  }, [isPackPage]);
 
   useEffect(() => {
     if (product?.weightOptions[0]) {
@@ -60,6 +73,8 @@ export function ProductPage() {
   const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const shipping = wilaya ? (freeShipping ? 0 : SHIPPING_PRICES[wilaya]?.[deliveryMethod] ?? 0) : 0;
   const total = subtotal + shipping;
+  const pageLoading = isPackPage ? packLoading : loading;
+  const backToListing = isPackPage ? "/packs" : "/produits";
 
   useEffect(() => {
     if (!product || !weightOption) return;
@@ -79,15 +94,15 @@ export function ProductPage() {
     );
   }, [product, weightOption]);
 
-  if (!loading && !product) {
+  if (!pageLoading && !product) {
     return (
       <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
         <Navbar />
         <main className="mx-auto flex max-w-4xl flex-col items-center justify-center px-6 pb-24 pt-36 text-center">
           <h1 className="text-4xl font-extrabold">المنتج غير متوفر</h1>
           <p className="mt-4 text-base text-[#6b5640]">هذا الرابط غير صالح أو أن المنتج لم يعد موجوداً.</p>
-          <Link to="/produits" className="mt-8 rounded-full bg-[#f0a429] px-7 py-4 text-sm font-extrabold text-[#24160b]">
-            العودة إلى المنتجات
+          <Link to={backToListing} className="mt-8 rounded-full bg-[#f0a429] px-7 py-4 text-sm font-extrabold text-[#24160b]">
+            {isPackPage ? "العودة إلى الباقات" : "العودة إلى المنتجات"}
           </Link>
         </main>
         <Footer />
@@ -95,7 +110,7 @@ export function ProductPage() {
     );
   }
 
-  if (loading && !product) {
+  if (pageLoading && !product) {
     return (
       <div className="min-h-screen bg-[#fffaf0] text-[#24160b]">
         <Navbar />
@@ -171,8 +186,8 @@ export function ProductPage() {
           </section>
 
           <section>
-            <Link to="/produits" className="text-sm font-extrabold text-[#d18b11]">
-              العودة إلى المنتجات
+            <Link to={backToListing} className="text-sm font-extrabold text-[#d18b11]">
+              {isPackPage ? "العودة إلى الباقات" : "العودة إلى المنتجات"}
             </Link>
             <h1 className="mt-3 text-4xl font-extrabold md:text-5xl">{product.name}</h1>
             <div className="mt-4 flex items-end gap-3">

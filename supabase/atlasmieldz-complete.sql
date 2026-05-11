@@ -2,6 +2,7 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.products (
   id text primary key,
+  product_type text not null default 'product' check (product_type in ('product', 'pack')),
   name text not null,
   description text not null default '',
   price integer not null default 0,

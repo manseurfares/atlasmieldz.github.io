@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 const links = [
   { label: "الرئيسية", href: "/" },
   { label: "المنتجات", href: "/produits" },
+  { label: "الباقات", href: "/packs" },
   { label: "من نحن", href: "/histoire" },
   { label: "اتصل بنا", href: "/contact" },
 ];

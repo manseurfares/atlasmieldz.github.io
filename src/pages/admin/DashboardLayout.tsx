@@ -1,12 +1,21 @@
 import { useEffect } from "react";
 import { Link, NavLink, Navigate, Outlet } from "react-router-dom";
-import { Boxes, ChartNoAxesCombined, LogOut, ShoppingBag, Trash2, Users } from "lucide-react";
+import {
+  Boxes,
+  ChartNoAxesCombined,
+  Gift,
+  LogOut,
+  ShoppingBag,
+  Trash2,
+  Users,
+} from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { ASSETS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "المنتجات", icon: Boxes, end: true },
+  { href: "/admin/packs", label: "الباقات", icon: Gift },
   { href: "/admin/orders", label: "الطلبات", icon: ShoppingBag },
   { href: "/admin/orders/trash", label: "سلة المحذوفات", icon: Trash2 },
   { href: "/admin/users", label: "المستخدمون", icon: Users },
@@ -39,10 +48,12 @@ export function DashboardLayout() {
                 key={link.href}
                 to={link.href}
                 end={link.end}
-                className={({ isActive }) => cn(
-                  "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition",
-                  isActive ? "bg-[#fff2d4] text-[#d18b11]" : "text-[#24160b] hover:bg-[#fff9eb]",
-                )}
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition",
+                    isActive ? "bg-[#fff2d4] text-[#d18b11]" : "text-[#24160b] hover:bg-[#fff9eb]",
+                  )
+                }
               >
                 <link.icon size={18} />
                 {link.label}

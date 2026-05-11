@@ -26,6 +26,7 @@ export const ASSETS = {
 export const DEFAULT_PRODUCTS: ProductRecord[] = [
   {
     id: "miel-montagne",
+    productType: "product",
     name: "عسل الجبال",
     description:
       "عسل طبيعي أصيل بطابع جبلي غني، يتميز بنكهة عميقة وقوام متوازن ومذاق فاخر مناسب للاستهلاك اليومي والضيافة.",
@@ -44,6 +45,7 @@ export const DEFAULT_PRODUCTS: ProductRecord[] = [
   },
   {
     id: "miel-sidr",
+    productType: "product",
     name: "عسل السدر",
     description:
       "من أشهر أنواع العسل الفاخر، يتميز بطعمه القوي وقيمته العالية، مختار بعناية لعشاق الجودة والنكهة الأصيلة.",
@@ -62,6 +64,7 @@ export const DEFAULT_PRODUCTS: ProductRecord[] = [
   },
   {
     id: "miel-fleurs",
+    productType: "product",
     name: "عسل الأزهار",
     description:
       "عسل زهري خفيف ولذيذ، مناسب لكل أفراد العائلة، يجمع بين الحلاوة الطبيعية والرائحة الهادئة.",
@@ -80,6 +83,7 @@ export const DEFAULT_PRODUCTS: ProductRecord[] = [
   },
   {
     id: "miel-romarin",
+    productType: "product",
     name: "عسل إكليل الجبل",
     description:
       "عسل عطري بنفحات عشبية ناعمة، مثالي للشاي والاستخدام اليومي، مع جودة منتقاة بعناية.",
@@ -98,6 +102,7 @@ export const DEFAULT_PRODUCTS: ProductRecord[] = [
   },
   {
     id: "miel-thym",
+    productType: "product",
     name: "عسل الزعتر",
     description:
       "عسل قوي ومميز بنكهة متوسطية مركزة، لمحبي العسل العطري ذي الشخصية القوية.",

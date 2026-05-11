@@ -3,6 +3,7 @@ import type {
   AdminRole,
   AdminUserRecord,
   MetaPixelSettings,
+  ProductKind,
   OrderInput,
   OrderRecord,
   OrderStatus,
@@ -51,6 +52,7 @@ function serializeProduct(input: ProductInput, id?: string) {
 
   return {
     ...(id ? { id } : {}),
+    product_type: input.productType,
     name: input.name.trim(),
     description: input.description.trim(),
     price: basePrice,
@@ -93,6 +95,7 @@ function parseWeightOptions(row: Record<string, unknown>): ProductWeightOption[]
 function parseProduct(row: Record<string, unknown>): ProductRecord {
   return {
     id: String(row.id ?? ""),
+    productType: String(row.product_type ?? "product") as ProductKind,
     name: String(row.name ?? ""),
     description: String(row.description ?? ""),
     images: Array.isArray(row.images) ? row.images.map(String) : [],
@@ -152,24 +155,29 @@ function makeOrderNumber() {
   return `ATLAS-${Date.now().toString().slice(-8)}`;
 }
 
-export async function fetchPublicProducts() {
+export async function fetchPublicProducts(productType: ProductKind = "product") {
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .eq("active", true)
+    .eq("product_type", productType)
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false });
 
   if (error) {
-    return DEFAULT_PRODUCTS;
+    return productType === "product" ? DEFAULT_PRODUCTS : [];
   }
 
   const products = (data ?? []).map((row) => parseProduct(row as Record<string, unknown>));
-  return products.length ? products : DEFAULT_PRODUCTS;
+  return products.length ? products : productType === "product" ? DEFAULT_PRODUCTS : [];
 }
 
-export async function fetchAdminProducts() {
-  const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+export async function fetchAdminProducts(productType: ProductKind = "product") {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("product_type", productType)
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -202,6 +210,7 @@ export async function seedDefaultProducts() {
   const payload = DEFAULT_PRODUCTS.map((product) =>
     serializeProduct(
       {
+        productType: "product",
         name: product.name,
         description: product.description,
         images: product.images,

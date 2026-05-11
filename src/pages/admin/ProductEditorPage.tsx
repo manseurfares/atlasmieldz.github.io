@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createProduct, fetchAdminProducts, updateProduct } from "@/lib/supabase";
 import { fileToDataUrl } from "@/lib/utils";
-import type { ProductInput, ProductWeightOption } from "@/types";
+import type { ProductInput, ProductKind, ProductWeightOption } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-function emptyForm(): ProductInput {
+function emptyForm(productType: ProductKind): ProductInput {
   return {
+    productType,
     name: "",
     description: "",
     images: [],
@@ -26,37 +27,52 @@ function emptyForm(): ProductInput {
 
 export function AdminProductEditorPage() {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const productType: ProductKind = location.pathname.startsWith("/admin/packs") ? "pack" : "product";
+  const isPackPage = productType === "pack";
   const isNew = !id || id === "new";
-  const [form, setForm] = useState<ProductInput>(emptyForm());
+  const [form, setForm] = useState<ProductInput>(emptyForm(productType));
   const [pendingImageUrl, setPendingImageUrl] = useState("");
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (isNew || !id) return;
-    void fetchAdminProducts().then((products) => {
-      const found = products.find((entry) => entry.id === id);
-      if (!found) {
-        toast.error("المنتج غير موجود.");
-        navigate("/admin", { replace: true });
-        return;
-      }
-      setForm({
-        name: found.name,
-        description: found.description,
-        images: found.images,
-        stock: found.stock,
-        featured: found.featured,
-        active: found.active,
-        weightOptions: found.weightOptions.length ? found.weightOptions : emptyForm().weightOptions,
+    setForm(emptyForm(productType));
+  }, [productType]);
+
+  useEffect(() => {
+    if (isNew || !id) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    void fetchAdminProducts(productType)
+      .then((products) => {
+        const found = products.find((entry) => entry.id === id);
+        if (!found) {
+          toast.error(isPackPage ? "الباقة غير موجودة." : "المنتج غير موجود.");
+          navigate(isPackPage ? "/admin/packs" : "/admin", { replace: true });
+          return;
+        }
+        setForm({
+          productType,
+          name: found.name,
+          description: found.description,
+          images: found.images,
+          stock: found.stock,
+          featured: found.featured,
+          active: found.active,
+          weightOptions: found.weightOptions.length ? found.weightOptions : emptyForm(productType).weightOptions,
+        });
+        setLoading(false);
+      })
+      .catch((error: Error) => {
+        toast.error(error.message);
+        setLoading(false);
       });
-      setLoading(false);
-    }).catch((error: Error) => {
-      toast.error(error.message);
-      setLoading(false);
-    });
-  }, [id, isNew, navigate]);
+  }, [id, isNew, isPackPage, navigate, productType]);
 
   const validWeightOptions = useMemo(
     () => form.weightOptions.filter((option) => option.label.trim()),
@@ -76,11 +92,13 @@ export function AdminProductEditorPage() {
     return <div className="h-40 animate-pulse rounded-[30px] bg-[#f6ead0]" />;
   }
 
+  const listingHref = isPackPage ? "/admin/packs" : "/admin";
+
   return (
     <section className="space-y-6">
       <div className="rounded-[30px] bg-white p-6 shadow-[0_24px_70px_-54px_rgba(112,69,8,0.45)]">
-        <p className="text-sm font-extrabold text-[#d18b11]">{isNew ? "إضافة منتج" : "تعديل المنتج"}</p>
-        <h1 className="mt-2 text-3xl font-extrabold">{isNew ? "منتج جديد" : form.name}</h1>
+        <p className="text-sm font-extrabold text-[#d18b11]">{isNew ? (isPackPage ? "إضافة باقة" : "إضافة منتج") : isPackPage ? "تعديل الباقة" : "تعديل المنتج"}</p>
+        <h1 className="mt-2 text-3xl font-extrabold">{isNew ? (isPackPage ? "باقة جديدة" : "منتج جديد") : form.name}</h1>
       </div>
 
       <form
@@ -88,20 +106,30 @@ export function AdminProductEditorPage() {
         onSubmit={(event) => {
           event.preventDefault();
           if (!form.name.trim() || !form.description.trim() || !validWeightOptions.length) {
-            toast.error("املأ اسم المنتج، الوصف، وأوزانه.");
+            toast.error(`املأ اسم ${isPackPage ? "الباقة" : "المنتج"}، الوصف، والأوزان.`);
             return;
           }
+
           setSaving(true);
-          const action = isNew ? createProduct(form) : updateProduct(id as string, form);
-          void action.then(() => {
-            toast.success(isNew ? "تم إنشاء المنتج." : "تم تحديث المنتج.");
-            navigate("/admin", { replace: true });
-          }).catch((error: Error) => toast.error(error.message)).finally(() => setSaving(false));
+          const payload = { ...form, productType };
+          const action = isNew ? createProduct(payload) : updateProduct(id as string, payload);
+
+          void action
+            .then(() => {
+              toast.success(isNew ? `تم إنشاء ${isPackPage ? "الباقة" : "المنتج"}.` : `تم تحديث ${isPackPage ? "الباقة" : "المنتج"}.`);
+              navigate(listingHref, { replace: true });
+            })
+            .catch((error: Error) => toast.error(error.message))
+            .finally(() => setSaving(false));
         }}
       >
         <div className="rounded-[30px] bg-white p-6 shadow-[0_24px_70px_-54px_rgba(112,69,8,0.45)]">
           <div className="grid gap-5 md:grid-cols-2">
-            <Input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} placeholder="اسم المنتج" />
+            <Input
+              value={form.name}
+              onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+              placeholder={isPackPage ? "اسم الباقة" : "اسم المنتج"}
+            />
             <Input
               type="number"
               min={0}
@@ -114,16 +142,24 @@ export function AdminProductEditorPage() {
             className="mt-5"
             value={form.description}
             onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-            placeholder="وصف المنتج"
+            placeholder={isPackPage ? "وصف الباقة" : "وصف المنتج"}
           />
 
           <div className="mt-5 flex flex-wrap gap-5 text-sm font-bold">
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.featured} onChange={(event) => setForm((current) => ({ ...current, featured: event.target.checked }))} />
-              منتج مميز
+              <input
+                type="checkbox"
+                checked={form.featured}
+                onChange={(event) => setForm((current) => ({ ...current, featured: event.target.checked }))}
+              />
+              {isPackPage ? "باقة مميزة" : "منتج مميز"}
             </label>
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={form.active} onChange={(event) => setForm((current) => ({ ...current, active: event.target.checked }))} />
+              <input
+                type="checkbox"
+                checked={form.active}
+                onChange={(event) => setForm((current) => ({ ...current, active: event.target.checked }))}
+              />
               ظاهر في الموقع
             </label>
           </div>
@@ -135,10 +171,12 @@ export function AdminProductEditorPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setForm((current) => ({
-                ...current,
-                weightOptions: [...current.weightOptions, { label: "", price: 0 }],
-              }))}
+              onClick={() =>
+                setForm((current) => ({
+                  ...current,
+                  weightOptions: [...current.weightOptions, { label: "", price: 0 }],
+                }))
+              }
             >
               <Plus size={16} />
               وزن جديد
@@ -154,10 +192,12 @@ export function AdminProductEditorPage() {
                 <button
                   type="button"
                   className="rounded-full bg-[#fee2e2] p-3 text-[#b42318]"
-                  onClick={() => setForm((current) => ({
-                    ...current,
-                    weightOptions: current.weightOptions.filter((_, optionIndex) => optionIndex !== index),
-                  }))}
+                  onClick={() =>
+                    setForm((current) => ({
+                      ...current,
+                      weightOptions: current.weightOptions.filter((_, optionIndex) => optionIndex !== index),
+                    }))
+                  }
                 >
                   <Trash2 size={16} />
                 </button>
@@ -167,7 +207,7 @@ export function AdminProductEditorPage() {
         </div>
 
         <div className="rounded-[30px] bg-white p-6 shadow-[0_24px_70px_-54px_rgba(112,69,8,0.45)]">
-          <h2 className="text-xl font-extrabold">صور المنتج</h2>
+          <h2 className="text-xl font-extrabold">صور {isPackPage ? "الباقة" : "المنتج"}</h2>
           <div className="mt-4 flex flex-wrap gap-4">
             {form.images.map((image, index) => (
               <div key={`${image}-${index}`} className="relative">
@@ -175,10 +215,12 @@ export function AdminProductEditorPage() {
                 <button
                   type="button"
                   className="absolute -left-2 -top-2 rounded-full bg-[#fee2e2] p-2 text-[#b42318]"
-                  onClick={() => setForm((current) => ({
-                    ...current,
-                    images: current.images.filter((_, imageIndex) => imageIndex !== index),
-                  }))}
+                  onClick={() =>
+                    setForm((current) => ({
+                      ...current,
+                      images: current.images.filter((_, imageIndex) => imageIndex !== index),
+                    }))
+                  }
                 >
                   <Trash2 size={14} />
                 </button>
@@ -210,18 +252,24 @@ export function AdminProductEditorPage() {
               className="hidden"
               onChange={(event) => {
                 const files = Array.from(event.target.files ?? []);
-                void Promise.all(files.map((file) => fileToDataUrl(file))).then((images) => {
-                  setForm((current) => ({ ...current, images: [...current.images, ...images] }));
-                }).catch((error: Error) => toast.error(error.message));
+                void Promise.all(files.map((file) => fileToDataUrl(file)))
+                  .then((images) => {
+                    setForm((current) => ({ ...current, images: [...current.images, ...images] }));
+                  })
+                  .catch((error: Error) => toast.error(error.message));
               }}
             />
           </label>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Button type="submit" disabled={saving}>{saving ? "جارٍ الحفظ..." : "حفظ المنتج"}</Button>
-          <Link to="/admin">
-            <Button type="button" variant="secondary">إلغاء</Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? "جارٍ الحفظ..." : isPackPage ? "حفظ الباقة" : "حفظ المنتج"}
+          </Button>
+          <Link to={listingHref}>
+            <Button type="button" variant="secondary">
+              إلغاء
+            </Button>
           </Link>
         </div>
       </form>

@@ -10,6 +10,7 @@ import { HomePage } from "@/pages/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ProductPage } from "@/pages/ProductPage";
 import { ProductsPage } from "@/pages/ProductsPage";
+import { PacksPage } from "@/pages/PacksPage";
 import { StoryPage } from "@/pages/StoryPage";
 import { ThanksPage } from "@/pages/ThanksPage";
 import { DashboardLayout } from "@/pages/admin/DashboardLayout";
@@ -41,6 +42,8 @@ function AppShell({ introDone, setIntroDone }: { introDone: boolean; setIntroDon
         <Route path="/" element={<HomePage />} />
         <Route path="/produits" element={<ProductsPage />} />
         <Route path="/produits/:id" element={<ProductPage />} />
+        <Route path="/packs" element={<PacksPage />} />
+        <Route path="/packs/:id" element={<ProductPage />} />
         <Route path="/histoire" element={<StoryPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/merci" element={<ThanksPage />} />
@@ -60,6 +63,9 @@ function AppShell({ introDone, setIntroDone }: { introDone: boolean; setIntroDon
           <Route index element={<AdminProductsPage />} />
           <Route path="products/new" element={<AdminProductEditorPage />} />
           <Route path="products/:id" element={<AdminProductEditorPage />} />
+          <Route path="packs" element={<AdminProductsPage />} />
+          <Route path="packs/new" element={<AdminProductEditorPage />} />
+          <Route path="packs/:id" element={<AdminProductEditorPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="orders/trash" element={<AdminOrderTrashPage />} />
           <Route path="users" element={<AdminUsersPage />} />
