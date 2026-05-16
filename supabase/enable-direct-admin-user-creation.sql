@@ -66,7 +66,7 @@ begin
     'authenticated',
     'authenticated',
     clean_email,
-    crypt(target_password, gen_salt('bf')),
+    extensions.crypt(target_password, extensions.gen_salt('bf')),
     now(),
     now(),
     jsonb_build_object('provider', 'email', 'providers', jsonb_build_array('email')),

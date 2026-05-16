@@ -36,7 +36,7 @@ begin
     'authenticated',
     'authenticated',
     new_email,
-    crypt(new_password, gen_salt('bf')),
+    extensions.crypt(new_password, extensions.gen_salt('bf')),
     now(),
     now(),
     '',
