@@ -165,11 +165,11 @@ export async function fetchPublicProducts(productType: ProductKind = "product") 
     .order("created_at", { ascending: false });
 
   if (error) {
-    return productType === "product" ? DEFAULT_PRODUCTS : [];
+    return [];
   }
 
   const products = (data ?? []).map((row) => parseProduct(row as Record<string, unknown>));
-  return products.length ? products : productType === "product" ? DEFAULT_PRODUCTS : [];
+  return products;
 }
 
 export async function fetchAdminProducts(productType: ProductKind = "product") {

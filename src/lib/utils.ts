@@ -22,10 +22,59 @@ export function toSlug(value: string) {
 
 export function fileToDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result ?? ""));
-    reader.onerror = () => reject(new Error("تعذر قراءة الصورة."));
-    reader.readAsDataURL(file);
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("يرجى اختيار صورة صالحة."));
+      return;
+    }
+
+    if (file.type === "image/svg+xml") {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(new Error("تعذر قراءة الصورة."));
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      const maxSide = 1600;
+      const longestSide = Math.max(image.width, image.height);
+      const scale = longestSide > maxSide ? maxSide / longestSide : 1;
+      const width = Math.max(1, Math.round(image.width * scale));
+      const height = Math.max(1, Math.round(image.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const context = canvas.getContext("2d");
+      if (!context) {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("تعذر تجهيز الصورة."));
+        return;
+      }
+
+      context.drawImage(image, 0, 0, width, height);
+
+      try {
+        const outputType = file.type === "image/png" ? "image/png" : "image/jpeg";
+        const quality = outputType === "image/png" ? undefined : 0.82;
+        const result = canvas.toDataURL(outputType, quality);
+        URL.revokeObjectURL(objectUrl);
+        resolve(result);
+      } catch {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("تعذر ضغط الصورة قبل رفعها."));
+      }
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("تعذر تحميل الصورة المختارة."));
+    };
+
+    image.src = objectUrl;
   });
 }
 

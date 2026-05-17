@@ -23,10 +23,12 @@ import { AdminProductsPage } from "@/pages/admin/ProductsPage";
 import { ResetPasswordPage } from "@/pages/admin/ResetPasswordPage";
 import { AdminUsersPage } from "@/pages/admin/UsersPage";
 import { AuthCallbackPage } from "@/pages/auth/AuthCallbackPage";
+import { decodeSafeId } from "@/lib/utils";
 
 function LegacyProductRedirect() {
   const { id } = useParams();
-  return <Navigate to={id ? `/produits/${id}` : "/produits"} replace />;
+  const safeId = decodeSafeId(id);
+  return <Navigate to={safeId ? `/produits/${safeId}` : "/produits"} replace />;
 }
 
 function AppShell({ introDone, setIntroDone }: { introDone: boolean; setIntroDone: (value: boolean) => void }) {
@@ -42,14 +44,17 @@ function AppShell({ introDone, setIntroDone }: { introDone: boolean; setIntroDon
         <Route path="/" element={<HomePage />} />
         <Route path="/produits" element={<ProductsPage />} />
         <Route path="/produits/:id" element={<ProductPage />} />
+        <Route path="/produits/:id/*" element={<ProductPage />} />
         <Route path="/packs" element={<PacksPage />} />
         <Route path="/packs/:id" element={<ProductPage />} />
+        <Route path="/packs/:id/*" element={<ProductPage />} />
         <Route path="/histoire" element={<StoryPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/merci" element={<ThanksPage />} />
 
         <Route path="/shop" element={<Navigate to="/produits" replace />} />
         <Route path="/shop/product/:id" element={<LegacyProductRedirect />} />
+        <Route path="/shop/product/:id/*" element={<LegacyProductRedirect />} />
         <Route path="/about" element={<Navigate to="/histoire" replace />} />
         <Route path="/cart" element={<Navigate to="/produits" replace />} />
         <Route path="/checkout" element={<Navigate to="/produits" replace />} />

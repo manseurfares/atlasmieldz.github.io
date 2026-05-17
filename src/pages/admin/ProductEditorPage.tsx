@@ -252,9 +252,11 @@ export function AdminProductEditorPage() {
               className="hidden"
               onChange={(event) => {
                 const files = Array.from(event.target.files ?? []);
+                if (!files.length) return;
                 void Promise.all(files.map((file) => fileToDataUrl(file)))
                   .then((images) => {
                     setForm((current) => ({ ...current, images: [...current.images, ...images] }));
+                    event.target.value = "";
                   })
                   .catch((error: Error) => toast.error(error.message));
               }}
