@@ -42,6 +42,10 @@ function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number 
             <img
               src={item.left}
               alt={item.title}
+              loading="lazy"
+              decoding="async"
+              width={720}
+              height={940}
               className="h-[190px] w-full rounded-[14px] object-cover md:h-[470px] md:rounded-[22px]"
             />
           </div>
@@ -59,6 +63,10 @@ function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number 
             <img
               src={item.right}
               alt={item.title}
+              loading="lazy"
+              decoding="async"
+              width={720}
+              height={940}
               className="h-[190px] w-full rounded-[14px] object-cover md:h-[470px] md:rounded-[22px]"
             />
           </div>
@@ -277,6 +285,10 @@ export function HomePage() {
                 <img
                   src={ASSETS.arabicHoneyShowcase}
                   alt="العسل ومنتجات الخلية"
+                  loading="lazy"
+                  decoding="async"
+                  width={900}
+                  height={900}
                   className="w-full rounded-[30px] object-cover"
                 />
               </div>
@@ -329,6 +341,10 @@ export function HomePage() {
                     <img
                       src={product.images[0]}
                       alt={product.name}
+                      loading="lazy"
+                      decoding="async"
+                      width={1080}
+                      height={1350}
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-6">
@@ -404,7 +420,15 @@ export function HomePage() {
           transition={{ duration: 0.75 }}
           className="relative overflow-hidden py-24"
         >
-          <img src={ASSETS.ctaHoneycomb} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img
+            src={ASSETS.ctaHoneycomb}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width={1600}
+            height={900}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(36,22,11,0.82),rgba(36,22,11,0.58))]" />
           <div className="relative z-10 mx-auto max-w-5xl px-6 text-center text-white">
             <p className="text-sm font-extrabold tracking-[0.28em] text-[#ffbf43]">تذوق الأصالة</p>

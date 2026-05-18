@@ -40,6 +40,10 @@ export function ProductsPage() {
                     <img
                       src={product.images[0]}
                       alt={product.name}
+                      loading="lazy"
+                      decoding="async"
+                      width={1080}
+                      height={1350}
                       className="h-full w-full object-cover transition duration-700 hover:scale-105"
                     />
                   </div>

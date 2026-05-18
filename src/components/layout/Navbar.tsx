@@ -40,7 +40,7 @@ export function Navbar() {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
           <Link to="/" className="shrink-0">
-            <img src={ASSETS.logo} alt="ATLAS" className="h-12 w-28 object-contain" />
+            <img src={ASSETS.logo} alt="ATLAS" width={112} height={48} decoding="async" className="h-12 w-28 object-contain" />
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">

@@ -108,6 +108,26 @@ function parseProduct(row: Record<string, unknown>): ProductRecord {
   };
 }
 
+function parseProductCard(row: Record<string, unknown>): ProductRecord {
+  const firstImage = row.first_image ? String(row.first_image) : "";
+  const secondImage = row.second_image ? String(row.second_image) : "";
+  const images = [firstImage, secondImage].filter(Boolean);
+
+  return {
+    id: String(row.id ?? ""),
+    productType: String(row.product_type ?? "product") as ProductKind,
+    name: String(row.name ?? ""),
+    description: String(row.description ?? ""),
+    images,
+    stock: Number(row.stock ?? 0),
+    featured: Boolean(row.featured),
+    active: Boolean(row.active),
+    weightOptions: parseWeightOptions(row),
+    createdAt: row.created_at ? String(row.created_at) : undefined,
+    updatedAt: row.updated_at ? String(row.updated_at) : undefined,
+  };
+}
+
 function parseOrder(row: Record<string, unknown>): OrderRecord {
   const shippingAddress =
     row.shipping_address && typeof row.shipping_address === "object"
@@ -170,6 +190,39 @@ export async function fetchPublicProducts(productType: ProductKind = "product") 
 
   const products = (data ?? []).map((row) => parseProduct(row as Record<string, unknown>));
   return products;
+}
+
+export async function fetchPublicProductCards(productType: ProductKind = "product") {
+  const { data, error } = await supabase
+    .from("products_public_cards")
+    .select("*")
+    .eq("active", true)
+    .eq("product_type", productType)
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (!error && data) {
+    return data.map((row) => parseProductCard(row as Record<string, unknown>));
+  }
+
+  return fetchPublicProducts(productType);
+}
+
+export async function fetchPublicProductById(id: string, productType: ProductKind = "product") {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .eq("product_type", productType)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) return null;
+  return parseProduct(data as Record<string, unknown>);
 }
 
 export async function fetchAdminProducts(productType: ProductKind = "product") {

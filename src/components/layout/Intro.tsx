@@ -29,7 +29,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
     <AnimatePresence>
       {!closing ? (
         <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black">
-          <video ref={ref} autoPlay muted playsInline preload="auto" className="h-full w-full object-cover">
+          <video ref={ref} autoPlay muted playsInline preload="metadata" className="h-full w-full object-cover">
             <source src={ASSETS.introVideo} type="video/mp4" />
           </video>
 

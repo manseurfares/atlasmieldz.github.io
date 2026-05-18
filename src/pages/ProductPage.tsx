@@ -3,12 +3,11 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { CheckCircle2, Gift, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
-import { useCatalog } from "@/components/CatalogProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_PRICES, WILAYAS } from "@/lib/constants";
 import { trackPixel } from "@/lib/pixel";
-import { createOrder, fetchPublicProducts } from "@/lib/supabase";
+import { createOrder, fetchPublicProductById } from "@/lib/supabase";
 import type { ProductRecord } from "@/types";
 import { decodeSafeId, formatDzd } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,12 +17,10 @@ export function ProductPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { products, loading } = useCatalog();
   const isPackPage = location.pathname.startsWith("/packs");
   const productId = decodeSafeId(id);
-  const [packProducts, setPackProducts] = useState<ProductRecord[]>([]);
-  const [packLoading, setPackLoading] = useState(false);
-  const product = (isPackPage ? packProducts : products).find((entry) => entry.id === productId);
+  const [product, setProduct] = useState<ProductRecord | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState("");
   const [name, setName] = useState("");
@@ -41,12 +38,21 @@ export function ProductPage() {
   };
 
   useEffect(() => {
-    if (!isPackPage) return;
-    setPackLoading(true);
-    void fetchPublicProducts("pack")
-      .then((items) => setPackProducts(items))
-      .finally(() => setPackLoading(false));
-  }, [isPackPage]);
+    if (!productId) {
+      setLoading(false);
+      setProduct(null);
+      return;
+    }
+
+    setLoading(true);
+    void fetchPublicProductById(productId, isPackPage ? "pack" : "product")
+      .then((item) => setProduct(item))
+      .catch((error: Error) => {
+        toast.error(error.message);
+        setProduct(null);
+      })
+      .finally(() => setLoading(false));
+  }, [isPackPage, productId]);
 
   useEffect(() => {
     if (product?.weightOptions[0]) {
@@ -73,7 +79,7 @@ export function ProductPage() {
   const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const shipping = wilaya ? (freeShipping ? 0 : SHIPPING_PRICES[wilaya]?.[deliveryMethod] ?? 0) : 0;
   const total = subtotal + shipping;
-  const pageLoading = isPackPage ? packLoading : loading;
+  const pageLoading = loading;
   const backToListing = isPackPage ? "/packs" : "/produits";
 
   useEffect(() => {
@@ -167,7 +173,15 @@ export function ProductPage() {
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <section>
             <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_28px_80px_-58px_rgba(112,69,8,0.55)]">
-              <img src={product.images[activeImage]} alt={product.name} className="h-full w-full object-cover" />
+              <img
+                src={product.images[activeImage]}
+                alt={product.name}
+                fetchPriority="high"
+                decoding="async"
+                width={1080}
+                height={1350}
+                className="h-full w-full object-cover"
+              />
             </div>
             <div className="mt-4 grid grid-cols-4 gap-3">
               {product.images.map((image, index) => (
@@ -179,7 +193,15 @@ export function ProductPage() {
                     activeImage === index ? "border-[#f0a429]" : "border-[#ead7af]"
                   }`}
                 >
-                  <img src={image} alt="" className="aspect-square h-full w-full object-cover" />
+                  <img
+                    src={image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={240}
+                    height={240}
+                    className="aspect-square h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>
