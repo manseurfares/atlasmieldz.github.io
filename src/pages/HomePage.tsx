@@ -29,7 +29,7 @@ function StickyStoryPanel({ item, index }: { item: ShowcaseScene; index: number 
     <section className="sticky top-0 flex h-[82svh] items-center overflow-hidden rounded-t-[36px] bg-[#f6f0e6] md:h-screen">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(209,139,17,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(209,139,17,0.08)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-2 items-center gap-x-3 gap-y-5 px-4 md:gap-8 md:px-6 md:grid-cols-[1fr_auto_1fr]">
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-2 items-center gap-x-3 gap-y-5 px-4 md:grid-cols-[1fr_auto_1fr] md:gap-8 md:px-6">
         <motion.div
           initial={{ opacity: 0, x: -160, rotate: -14, scale: 0.92 }}
           whileInView={{ opacity: 1, x: 0, rotate: index === 0 ? -8 : index === 1 ? -5 : -10, scale: 1 }}
@@ -105,53 +105,53 @@ export function HomePage() {
     void video.play().catch(() => undefined);
   }, []);
 
-  const featuredProducts = useMemo(
-    () => products.filter((product) => product.active).slice(0, 3),
-    [products],
-  );
+  const featuredProducts = useMemo(() => {
+    const activeProducts = products.filter((product) => product.active);
+    const featured = activeProducts.filter((product) => product.featured);
+    return (featured.length ? featured : activeProducts).slice(0, 3);
+  }, [products]);
 
   const showcasePairs = useMemo<ShowcaseScene[]>(() => {
-    const images = products
-      .filter((product) => product.active)
-      .flatMap((product) => product.images)
-      .filter(Boolean)
-      .slice(0, 6);
-
-    const fallback = [
-      ASSETS.ctaHoneycomb,
-      ASSETS.honeyLiquid,
-      ASSETS.arabicHoneyShowcase,
-      ASSETS.ctaHoneycomb,
-      ASSETS.honeyLiquid,
-      ASSETS.arabicHoneyShowcase,
+    const fallbackPairs: Array<[string, string]> = [
+      [ASSETS.ctaHoneycomb, ASSETS.honeyLiquid],
+      [ASSETS.honeyLiquid, ASSETS.arabicHoneyShowcase],
+      [ASSETS.arabicHoneyShowcase, ASSETS.ctaHoneycomb],
     ];
 
-    const pool = images.length >= 6 ? images : fallback;
+    const imagePairs = featuredProducts.map((product, index) => {
+      const firstImage = product.images.find(Boolean) ?? fallbackPairs[index]?.[0] ?? ASSETS.ctaHoneycomb;
+      const secondImage = product.images[1] ?? product.images[0] ?? fallbackPairs[index]?.[1] ?? firstImage;
+      return [firstImage, secondImage] as [string, string];
+    });
+
+    while (imagePairs.length < 3) {
+      imagePairs.push(fallbackPairs[imagePairs.length]);
+    }
 
     return [
       {
         step: "1",
         title: "اختيار دقيق",
         text: "نبدأ بانتقاء الأنواع التي تستحق أن تحمل اسم أطلس ميل، حتى لا يصل إليكم إلا العسل الذي يحقق معاييرنا في الطعم والجودة.",
-        left: pool[0],
-        right: pool[1],
+        left: imagePairs[0][0],
+        right: imagePairs[0][1],
       },
       {
         step: "2",
         title: "نقاء طبيعي",
         text: "نحافظ على طبيعة المنتج كما هي، بلا إضافات أو خلط، ليبقى المذاق الأصيل والفوائد الطبيعية حاضرين في كل ملعقة.",
-        left: pool[2],
-        right: pool[3],
+        left: imagePairs[1][0],
+        right: imagePairs[1][1],
       },
       {
         step: "3",
         title: "ثقة عند الاستلام",
         text: "نهتم بالتفاصيل من العرض إلى التعبئة، حتى تصلكم الطلبات بصورة تليق بثقتكم وتمنحكم تجربة شراء مطمئنة وواضحة.",
-        left: pool[4],
-        right: pool[5],
+        left: imagePairs[2][0],
+        right: imagePairs[2][1],
       },
     ];
-  }, [products]);
+  }, [featuredProducts]);
 
   return (
     <div className="overflow-x-hidden bg-[#fffaf0] text-[#24160b]">
@@ -270,11 +270,7 @@ export function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div
-              {...revealUp}
-              transition={{ duration: 0.75, delay: 0.08 }}
-              className="relative"
-            >
+            <motion.div {...revealUp} transition={{ duration: 0.75, delay: 0.08 }} className="relative">
               <div className="absolute -left-6 top-10 hidden h-32 w-32 rounded-full bg-[#f0a429]/15 blur-3xl md:block" />
               <div className="absolute -bottom-10 -right-6 hidden h-40 w-40 rounded-full bg-[#24160b]/10 blur-3xl md:block" />
               <div className="overflow-hidden rounded-[38px] border border-[#ead7af] bg-white p-3 shadow-[0_30px_90px_-58px_rgba(112,69,8,0.55)]">
@@ -289,10 +285,7 @@ export function HomePage() {
         </section>
 
         <section className="bg-[#f6f0e6] pt-20 md:pt-24">
-          <motion.div
-            {...revealUp}
-            className="mx-auto mb-8 max-w-4xl px-6 text-center"
-          >
+          <motion.div {...revealUp} className="mx-auto mb-8 max-w-4xl px-6 text-center">
             <p className="text-sm font-extrabold tracking-[0.28em] text-[#d18b11]">لماذا أطلس ميل؟</p>
             <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">ثلاث مراحل تصنع الفرق</h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm font-bold leading-8 text-[#6a533a] md:text-base">
