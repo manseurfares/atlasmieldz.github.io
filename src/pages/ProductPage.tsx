@@ -5,6 +5,7 @@ import { CheckCircle2, Gift, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { useCatalog } from "@/components/CatalogProvider";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_PRICES, WILAYAS } from "@/lib/constants";
 import { trackPixel } from "@/lib/pixel";
 import { createOrder, fetchPublicProductById } from "@/lib/supabase";
@@ -17,10 +18,17 @@ export function ProductPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { getCachedProduct, cacheProduct } = useCatalog();
   const isPackPage = location.pathname.startsWith("/packs");
+  const productType = isPackPage ? "pack" : "product";
   const productId = decodeSafeId(id);
-  const [product, setProduct] = useState<ProductRecord | null>(null);
-  const [loading, setLoading] = useState(true);
+  const stateProduct = (location.state as { product?: ProductRecord } | null)?.product;
+  const initialProduct =
+    stateProduct?.id === productId && stateProduct.productType === productType
+      ? stateProduct
+      : getCachedProduct(productId, productType);
+  const [product, setProduct] = useState<ProductRecord | null>(initialProduct);
+  const [loading, setLoading] = useState(!initialProduct);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState("");
   const [name, setName] = useState("");
@@ -32,6 +40,7 @@ export function ProductPage() {
   const [submitting, setSubmitting] = useState(false);
   const mobileOrderFormRef = useRef<HTMLElement | null>(null);
   const desktopOrderFormRef = useRef<HTMLElement | null>(null);
+  const lastTrackedProductKeyRef = useRef<string>("");
 
   const scrollToOrderForm = () => {
     const form =
@@ -50,15 +59,29 @@ export function ProductPage() {
       return;
     }
 
-    setLoading(true);
-    void fetchPublicProductById(productId, isPackPage ? "pack" : "product")
-      .then((item) => setProduct(item))
+    const nextInitialProduct =
+      stateProduct?.id === productId && stateProduct.productType === productType
+        ? stateProduct
+        : getCachedProduct(productId, productType);
+
+    setProduct((current) => {
+      if (nextInitialProduct) return nextInitialProduct;
+      if (current?.id !== productId || current.productType !== productType) return null;
+      return current;
+    });
+    setLoading(!nextInitialProduct);
+
+    void fetchPublicProductById(productId, productType)
+      .then((item) => {
+        setProduct(item);
+        if (item) cacheProduct(item);
+      })
       .catch((error: Error) => {
         toast.error(error.message);
         setProduct(null);
       })
       .finally(() => setLoading(false));
-  }, [isPackPage, productId]);
+  }, [cacheProduct, getCachedProduct, isPackPage, productId, productType, stateProduct]);
 
   useEffect(() => {
     if (product?.weightOptions[0]) {
@@ -90,6 +113,9 @@ export function ProductPage() {
 
   useEffect(() => {
     if (!product || !weightOption) return;
+    const currentProductKey = `${product.productType}:${product.id}`;
+    if (lastTrackedProductKeyRef.current === currentProductKey) return;
+    lastTrackedProductKeyRef.current = currentProductKey;
 
     void trackPixel(
       "ViewContent",
