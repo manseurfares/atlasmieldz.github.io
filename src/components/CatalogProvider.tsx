@@ -27,7 +27,7 @@ interface CatalogContextValue {
 }
 
 const CatalogContext = createContext<CatalogContextValue | null>(null);
-const CATALOG_CACHE_KEY = "atlas-products-cache-v1";
+const CATALOG_CACHE_KEY = "atlas-products-cache-v2";
 
 function getCacheKey(id: string, productType: ProductKind) {
   return `${productType}:${id}` as ProductCacheKey;
@@ -47,9 +47,22 @@ function readCatalogCache() {
   }
 }
 
+function isProductRecord(value: unknown): value is ProductRecord {
+  if (!value || typeof value !== "object") return false;
+
+  const candidate = value as Partial<ProductRecord>;
+  return (
+    typeof candidate.id === "string" &&
+    (candidate.productType === "product" || candidate.productType === "pack") &&
+    typeof candidate.name === "string" &&
+    Array.isArray(candidate.images) &&
+    Array.isArray(candidate.weightOptions)
+  );
+}
+
 function getCachedCollection(cache: ProductCacheMap, productType: ProductKind) {
   return Object.values(cache)
-    .filter((item) => item.productType === productType)
+    .filter((item): item is ProductRecord => isProductRecord(item) && item.productType === productType)
     .sort((left, right) => {
       if (left.featured !== right.featured) return left.featured ? -1 : 1;
       return (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
@@ -119,7 +132,10 @@ export function CatalogProvider({ children }: PropsWithChildren) {
   }, [reloadPacks, reloadProducts]);
 
   const getCachedProduct = useCallback(
-    (id: string, productType: ProductKind = "product") => cache[getCacheKey(id, productType)] ?? null,
+    (id: string, productType: ProductKind = "product") => {
+      const item = cache[getCacheKey(id, productType)];
+      return isProductRecord(item) ? item : null;
+    },
     [cache],
   );
 
