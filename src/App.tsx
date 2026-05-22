@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from "
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CatalogProvider } from "@/components/CatalogProvider";
+import { ProductPageSkeleton } from "@/components/ProductPageSkeleton";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Intro } from "@/components/layout/Intro";
 import { HomePage } from "@/pages/HomePage";
@@ -53,13 +54,16 @@ function LegacyProductRedirect() {
 function AppShell({ introDone, setIntroDone }: { introDone: boolean; setIntroDone: (value: boolean) => void }) {
   const location = useLocation();
   const showIntro = location.pathname === "/" && !introDone;
+  const isProductRoute =
+    location.pathname.startsWith("/produits/") || location.pathname.startsWith("/packs/");
+  const suspenseFallback = isProductRoute ? <ProductPageSkeleton /> : <div className="min-h-screen bg-[#fffaf0]" />;
 
   return (
     <>
       {showIntro ? <Intro onDone={() => setIntroDone(true)} /> : null}
 
       <ScrollToTop />
-      <Suspense fallback={<div className="min-h-screen bg-[#fffaf0]" />}>
+      <Suspense fallback={suspenseFallback}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/produits" element={<ProductsPage />} />
